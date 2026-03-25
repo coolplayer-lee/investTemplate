@@ -1,0 +1,72 @@
+name: 每日监控概览生成
+
+on:
+  schedule:
+    # A股收盘后 15:30 = UTC 07:30
+    # 港股收盘后 16:30 = UTC 08:30
+    # 选择 09:00 UTC = 北京时间 17:00（两地都收盘后）
+    - cron: '0 9 * * 1-5'
+  
+  # 允许手动触发
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-overview:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+      
+    - name: 设置 Python 环境
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+        
+    - name: 安装依赖
+      run: |
+        python -m pip install --upgrade pip
+        pip install akshare pandas
+        
+    - name: 生成监控概览
+      run: |
+        python scripts/generate_monitoring_overview.py
+        
+    - name: 提交更新
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add 07-分析输出/监控概览.md
+        git commit -m "📊 更新每日监控概览 $(date +'%Y-%m-%d %H:%M')" || echo "No changes to commit"
+        git push
+        
+    - name: 创建Issue提醒（如有接近买点的标的）
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const overviewPath = '07-分析输出/监控概览.md';
+          
+          if (fs.existsSync(overviewPath)) {
+            const content = fs.readFileSync(overviewPath, 'utf8');
+            
+            // 检查是否有接近买点的标的
+            if (content.includes('## 🔥 接近买点')) {
+              // 提取接近买点的部分
+              const match = content.match(/## 🔥 接近买点[\s\S]*?(?=## |$)/);
+              if (match) {
+                const title = `🚨 买入提醒 - ${new Date().toISOString().split('T')[0]}`;
+                
+                github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: title,
+                  body: match[0] + '\n\n[查看完整监控概览](../blob/main/07-分析输出/监控概览.md)',
+                  labels: ['buy-signal', 'automated', 'monitoring']
+                });
+              }
+            }
+          }
