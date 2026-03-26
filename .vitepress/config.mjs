@@ -12,6 +12,7 @@ export default defineConfig({
     // 导航栏
     nav: [
       { text: '首页', link: '/' },
+      { text: '🎯 模拟持仓', link: '/模拟持仓' },
       { text: '分析模板', link: '/个股分析标准模版' },
       { text: '版本日志', link: '/CHANGELOG' }
     ],
@@ -23,6 +24,7 @@ export default defineConfig({
         collapsed: false,
         items: [
           { text: '个股分析标准模版', link: '/个股分析标准模版' },
+          { text: '🎯 模拟持仓（实时）', link: '/模拟持仓' },
           { text: '项目介绍', link: '/README' },
           { text: '项目结构说明', link: '/项目结构说明' },
           { text: '更新日志', link: '/CHANGELOG' }

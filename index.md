@@ -4,7 +4,7 @@ layout: home
 hero:
   name: 投资分析模板
   text: 系统化价值投资框架
-  tagline: 港股/A股个股研究的标准化方法论 · V5.5.10 利润归因+财务疑点+周期分析版
+  tagline: 港股/A股个股研究的标准化方法论 · V5.5.12 观察仓框架+成长性陷阱+模拟投资组合版
   image:
     src: /logo.svg
     alt: 投资分析模板
@@ -12,15 +12,15 @@ hero:
     - theme: brand
       text: 🚀 开始使用
       link: /个股分析标准模版
+    - theme: brand
+      text: 🎯 模拟持仓（实时）
+      link: /模拟持仓
     - theme: alt
       text: 🔍 筛选框架
       link: /01-筛选框架/01-1-双市场筛选标准
     - theme: alt
       text: 📊 估值模型
       link: /03-估值模型/03-V2-高股息协议
-    - theme: alt
-      text: 📈 分析报告
-      link: /07-分析输出/
 
 features:
   - icon: 🎯
@@ -38,6 +38,9 @@ features:
   - icon: ⚡
     title: 实时标的追踪
     details: GitHub Actions 每日自动运行，监控持仓和关注标的动态
+  - icon: 🎯
+    title: 模拟投资组合
+    details: 50万港币初始资金，4只标的建仓，每日股价监控，验证模板有效性
   - icon: 🛡️
     title: 严格风控体系
     details: 分级数据源(S-D级)、仓位限制、止损规则、强制性核查清单
@@ -68,6 +71,7 @@ npm run docs:build
 | [05-策略框架](/05-策略框架/) | 烟蒂股等特定策略 |
 | [06-附录案例](/06-附录案例/) | 实战案例库 |
 | [07-分析输出](/07-分析输出/) | 📈 个股投资分析报告归档 + 🔥 每日监控概览 |
+| [🎯 模拟持仓](/模拟持仓) | 💰 50万港币模拟组合实时跟踪（京投/汇贤/天津/华润） |
 
 ## 核心概念
 
