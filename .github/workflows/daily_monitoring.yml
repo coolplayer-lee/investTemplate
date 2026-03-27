@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   generate-overview:
@@ -60,7 +61,7 @@ jobs:
               if (match) {
                 const title = `🚨 买入提醒 - ${new Date().toISOString().split('T')[0]}`;
                 
-                github.rest.issues.create({
+                await github.rest.issues.create({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   title: title,
