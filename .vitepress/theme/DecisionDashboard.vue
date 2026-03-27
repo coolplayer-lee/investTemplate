@@ -42,6 +42,12 @@ const pct = (n, digits = 2) => {
   const v = Number(n || 0)
   return `${v >= 0 ? '+' : ''}${v.toFixed(digits)}%`
 }
+const holdingPct = (p) => {
+  const cost = Number(p.avg_cost || 0)
+  const close = Number(p.close || 0)
+  if (!cost) return 0
+  return ((close / cost) - 1) * 100
+}
 
 const actionLabel = (a) => {
   if (a === 'BUY_ADD') return '加仓'
@@ -213,7 +219,8 @@ onBeforeUnmount(() => {
               <th>股数</th>
               <th>成本价</th>
               <th>现价</th>
-              <th>涨跌%</th>
+              <th>当日涨跌%</th>
+              <th>持仓收益率%</th>
               <th>仓位占比</th>
               <th>浮盈亏</th>
               <th>状态</th>
@@ -227,6 +234,7 @@ onBeforeUnmount(() => {
               <td>{{ Number(p.avg_cost).toFixed(3) }}</td>
               <td>{{ Number(p.close).toFixed(3) }}</td>
               <td :class="{ up: p.change_pct >= 0, down: p.change_pct < 0 }">{{ pct(p.change_pct, 2) }}</td>
+              <td :class="{ up: holdingPct(p) >= 0, down: holdingPct(p) < 0 }">{{ pct(holdingPct(p), 2) }}</td>
               <td>{{ pct(p.weight_pct, 2) }}</td>
               <td :class="{ up: p.unrealized >= 0, down: p.unrealized < 0 }">{{ money(p.unrealized) }}</td>
               <td>{{ p.status }}</td>

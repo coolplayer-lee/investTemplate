@@ -49,15 +49,15 @@
 }
 
 body.dashboard-wide .VPDoc .container {
-  max-width: 1500px !important;
+  max-width: 1680px !important;
 }
 
 body.dashboard-wide .VPDoc .content-container {
-  max-width: 1280px !important;
+  max-width: 1420px !important;
 }
 
 body.dashboard-wide .VPDoc.has-aside .content-container {
-  max-width: 1220px !important;
+  max-width: 1360px !important;
 }
 
 .dd-header h1 {
