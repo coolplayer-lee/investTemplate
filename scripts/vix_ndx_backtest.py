@@ -36,11 +36,14 @@ BACKTEST_CONFIG = {
     'investment_day': 1,               # 每月第1个交易日
     'vix_rules': [
         # (vix_low, vix_high, multiplier, label)
-        (0,  15, 1.0, '正常'),
-        (15, 20, 1.5, '轻度恐慌'),
-        (20, 25, 2.0, '中度恐慌'),
-        (25, 30, 3.0, '高度恐慌'),
-        (30, 999, 5.0, '极度恐慌'),
+        # 基于历史数据分析：VIX均值~17，90分位~30，历史极值~80
+        (0,  15, 1.0, '正常'),        # 约40%时间，牛市常态
+        (15, 20, 1.5, '轻度偏高'),    # 约25%时间，短期波动
+        (20, 25, 2.0, '中度恐慌'),    # 约15%时间，调整期
+        (25, 30, 3.0, '高度恐慌'),    # 约10%时间，明显恐慌
+        (30, 40, 5.0, '极度恐慌'),    # 约7%时间，危机初期
+        (40, 60, 8.0, '罕见恐慌'),    # 约2%时间，2008/2020级别
+        (60, 999, 12.0, '历史极值'),  # <1%时间，十年一遇黄金坑
     ],
     'risk_free_rate': 0.03,  # 无风险利率 3%（用于现金理财）
     'transaction_cost': 0,    # 每笔交易成本（USD），默认0
@@ -302,86 +305,174 @@ def calculate_metrics_with_cash(records_df, df_daily):
     }
 
 
-def generate_charts(df_vix, df_plain, df_lump, df_daily):
+def generate_charts(df_vix, df_plain, df_lump, df_daily, metrics_vix, metrics_plain, metrics_lump):
     """生成回测图表"""
     plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'Arial Unicode MS']
     plt.rcParams['axes.unicode_minus'] = False
     
+    # 准备标签（包含最终值）
+    vix_label = f"VIX增强定投: ${metrics_vix['final_total_assets']:,.0f} (投入${metrics_vix['total_invested']:,.0f})"
+    plain_label = f"普通定投+理财: ${metrics_plain['final_total_assets']:,.0f} (投入${metrics_plain['total_invested']:,.0f})"
+    lump_label = f"一次性投入: ${metrics_lump['final_total_assets']:,.0f}"
+    
     # 1. 总资产对比图
-    fig, ax = plt.subplots(figsize=(12, 6))
+    fig, ax = plt.subplots(figsize=(14, 7))
     
-    ax.plot(df_vix['date'], df_vix['total_assets'], label='VIX增强定投', linewidth=2, color='#e74c3c')
-    ax.plot(df_plain['date'], df_plain['total_assets'], label='普通定投+理财', linewidth=2, color='#3498db')
-    ax.plot(df_lump['date'], df_lump['total_assets'], label='一次性投入', linewidth=2, color='#2ecc71', linestyle='--')
+    line1, = ax.plot(df_vix['date'], df_vix['total_assets'], linewidth=2.5, color='#e74c3c')
+    line2, = ax.plot(df_plain['date'], df_plain['total_assets'], linewidth=2.5, color='#3498db')
+    line3, = ax.plot(df_lump['date'], df_lump['total_assets'], linewidth=2.5, color='#2ecc71', linestyle='--')
     
-    ax.set_title('总资产对比（股市价值+现金余额）', fontsize=14)
-    ax.set_xlabel('日期')
-    ax.set_ylabel('总资产 (USD)')
-    ax.legend(loc='upper left')
+    # 添加数据标签到图例
+    ax.legend([line1, line2, line3], [vix_label, plain_label, lump_label], 
+              loc='upper left', fontsize=11, framealpha=0.9)
+    
+    # 添加最终值标注
+    for df_data, color, label_text in [(df_vix, '#e74c3c', 'VIX'), 
+                                        (df_plain, '#3498db', '普通'),
+                                        (df_lump, '#2ecc71', '一次性')]:
+        final_date = df_data['date'].iloc[-1]
+        final_value = df_data['total_assets'].iloc[-1]
+        ax.annotate(f'${final_value/1000:.0f}K', 
+                   xy=(final_date, final_value),
+                   xytext=(10, 0), textcoords='offset points',
+                   fontsize=10, color=color, fontweight='bold',
+                   bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.7))
+    
+    ax.set_title('总资产对比（股市价值 + 现金余额）', fontsize=16, fontweight='bold')
+    ax.set_xlabel('日期', fontsize=12)
+    ax.set_ylabel('总资产 (USD)', fontsize=12)
     ax.grid(True, alpha=0.3)
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'${x/1000:.0f}K'))
     plt.tight_layout()
     plt.savefig(CHARTS_DIR / 'total_assets_comparison.png', dpi=150)
     plt.close()
     
     # 2. 股市价值对比图（只看股票部分）
-    fig, ax = plt.subplots(figsize=(12, 6))
+    fig, ax = plt.subplots(figsize=(14, 7))
     
-    ax.plot(df_vix['date'], df_vix['portfolio_value'], label='VIX增强定投', linewidth=2, color='#e74c3c')
-    ax.plot(df_plain['date'], df_plain['portfolio_value'], label='普通定投', linewidth=2, color='#3498db')
-    ax.plot(df_lump['date'], df_lump['portfolio_value'], label='一次性投入', linewidth=2, color='#2ecc71', linestyle='--')
+    vix_stock_label = f"VIX策略股市持仓: ${metrics_vix['final_stock_value']:,.0f}"
+    plain_stock_label = f"普通定投股市持仓: ${metrics_plain['final_stock_value']:,.0f}"
+    lump_stock_label = f"一次性投入股市持仓: ${metrics_lump['final_stock_value']:,.0f}"
     
-    ax.set_title('股市持仓价值对比（不含现金）', fontsize=14)
-    ax.set_xlabel('日期')
-    ax.set_ylabel('持仓价值 (USD)')
-    ax.legend(loc='upper left')
+    line1, = ax.plot(df_vix['date'], df_vix['portfolio_value'], linewidth=2.5, color='#e74c3c')
+    line2, = ax.plot(df_plain['date'], df_plain['portfolio_value'], linewidth=2.5, color='#3498db')
+    line3, = ax.plot(df_lump['date'], df_lump['portfolio_value'], linewidth=2.5, color='#2ecc71', linestyle='--')
+    
+    ax.legend([line1, line2, line3], [vix_stock_label, plain_stock_label, lump_stock_label], 
+              loc='upper left', fontsize=11, framealpha=0.9)
+    
+    # 添加最终值标注
+    for df_data, color in [(df_vix, '#e74c3c'), (df_plain, '#3498db'), (df_lump, '#2ecc71')]:
+        final_date = df_data['date'].iloc[-1]
+        final_value = df_data['portfolio_value'].iloc[-1]
+        ax.annotate(f'${final_value/1000:.0f}K', 
+                   xy=(final_date, final_value),
+                   xytext=(10, 0), textcoords='offset points',
+                   fontsize=10, color=color, fontweight='bold',
+                   bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.7))
+    
+    ax.set_title('股市持仓价值对比（不含现金余额）', fontsize=16, fontweight='bold')
+    ax.set_xlabel('日期', fontsize=12)
+    ax.set_ylabel('持仓价值 (USD)', fontsize=12)
     ax.grid(True, alpha=0.3)
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'${x/1000:.0f}K'))
     plt.tight_layout()
     plt.savefig(CHARTS_DIR / 'stock_value_comparison.png', dpi=150)
     plt.close()
     
     # 3. VIX策略现金余额变化
-    fig, ax = plt.subplots(figsize=(12, 5))
+    fig, ax = plt.subplots(figsize=(14, 6))
     
-    ax.fill_between(df_vix['date'], df_vix['cash_balance'], alpha=0.3, color='#95a5a6')
-    ax.plot(df_vix['date'], df_vix['cash_balance'], color='#7f8c8d', linewidth=1.5)
-    ax.set_title('VIX策略现金余额变化', fontsize=14)
-    ax.set_xlabel('日期')
-    ax.set_ylabel('现金余额 (USD)')
+    final_cash_vix = df_vix['cash_balance'].iloc[-1]
+    ax.fill_between(df_vix['date'], df_vix['cash_balance'], alpha=0.3, color='#95a5a6', label=f'现金余额（含理财收益）')
+    ax.plot(df_vix['date'], df_vix['cash_balance'], color='#7f8c8d', linewidth=2, label='余额曲线')
+    ax.axhline(y=0, color='red', linestyle='--', alpha=0.5, label='零线')
+    
+    # 标注最终余额
+    ax.annotate(f'最终余额: ${final_cash_vix:,.0f}', 
+               xy=(df_vix['date'].iloc[-1], final_cash_vix),
+               xytext=(10, 0), textcoords='offset points',
+               fontsize=11, color='#2c3e50', fontweight='bold',
+               bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8))
+    
+    ax.set_title('VIX策略：现金余额变化（恐慌时投入，平时积累）', fontsize=14, fontweight='bold')
+    ax.set_xlabel('日期', fontsize=12)
+    ax.set_ylabel('现金余额 (USD)', fontsize=12)
+    ax.legend(loc='upper left', fontsize=10)
     ax.grid(True, alpha=0.3)
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'${x/1000:.0f}K'))
     plt.tight_layout()
     plt.savefig(CHARTS_DIR / 'vix_cash_balance.png', dpi=150)
     plt.close()
     
     # 4. 普通定投现金余额变化
-    fig, ax = plt.subplots(figsize=(12, 5))
+    fig, ax = plt.subplots(figsize=(14, 6))
     
-    ax.fill_between(df_plain['date'], df_plain['cash_balance'], alpha=0.3, color='#3498db')
-    ax.plot(df_plain['date'], df_plain['cash_balance'], color='#2980b9', linewidth=1.5)
-    ax.set_title('普通定投现金余额变化（含理财收益）', fontsize=14)
-    ax.set_xlabel('日期')
-    ax.set_ylabel('现金余额 (USD)')
+    final_cash_plain = df_plain['cash_balance'].iloc[-1]
+    ax.fill_between(df_plain['date'], df_plain['cash_balance'], alpha=0.3, color='#3498db', label=f'现金余额（含3%理财收益）')
+    ax.plot(df_plain['date'], df_plain['cash_balance'], color='#2980b9', linewidth=2, label='余额曲线')
+    ax.axhline(y=0, color='red', linestyle='--', alpha=0.5, label='零线')
+    
+    # 标注最终余额
+    ax.annotate(f'最终余额: ${final_cash_plain:,.0f}', 
+               xy=(df_plain['date'].iloc[-1], final_cash_plain),
+               xytext=(10, 0), textcoords='offset points',
+               fontsize=11, color='#2c3e50', fontweight='bold',
+               bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8))
+    
+    ax.set_title('普通定投：现金余额变化（每月只投基础金额，剩余买理财）', fontsize=14, fontweight='bold')
+    ax.set_xlabel('日期', fontsize=12)
+    ax.set_ylabel('现金余额 (USD)', fontsize=12)
+    ax.legend(loc='upper left', fontsize=10)
     ax.grid(True, alpha=0.3)
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'${x/1000:.0f}K'))
     plt.tight_layout()
     plt.savefig(CHARTS_DIR / 'plain_cash_balance.png', dpi=150)
     plt.close()
     
     # 5. VIX策略月度投入金额图
-    fig, ax = plt.subplots(figsize=(14, 5))
+    fig, ax = plt.subplots(figsize=(16, 7))
     
-    colors = {'正常': '#3498db', '轻度恐慌': '#f1c40f', '中度恐慌': '#e67e22',
-              '高度恐慌': '#e74c3c', '极度恐慌': '#8e44ad'}
+    # 扩展颜色映射以支持7档
+    colors = {
+        '正常': '#3498db',         # 蓝色
+        '轻度偏高': '#5dade2',     # 浅蓝
+        '中度恐慌': '#f1c40f',     # 黄色
+        '高度恐慌': '#e67e22',     # 橙色
+        '极度恐慌': '#e74c3c',     # 红色
+        '罕见恐慌': '#8e44ad',     # 紫色
+        '历史极值': '#2c3e50',     # 黑色
+    }
     bar_colors = [colors.get(l, '#95a5a6') for l in df_vix['label']]
     
-    ax.bar(df_vix['date'], df_vix['actual_investment'], color=bar_colors, width=20)
-    ax.axhline(y=BACKTEST_CONFIG['base_monthly_investment'], color='gray', linestyle='--', alpha=0.7, label='基础定投额')
-    ax.set_title('VIX增强策略：每月实际投入金额', fontsize=14)
-    ax.set_xlabel('日期')
-    ax.set_ylabel('投入金额 (USD)')
+    bars = ax.bar(df_vix['date'], df_vix['actual_investment'], color=bar_colors, width=20)
+    ax.axhline(y=BACKTEST_CONFIG['base_monthly_investment'], color='gray', linestyle='--', 
+               alpha=0.8, linewidth=2, label=f'基础定投额 ${BACKTEST_CONFIG["base_monthly_investment"]:,}')
+    ax.axhline(y=BACKTEST_CONFIG['base_monthly_investment']*5, color='orange', linestyle=':', 
+               alpha=0.6, label='5倍线')
+    ax.axhline(y=BACKTEST_CONFIG['base_monthly_investment']*12, color='red', linestyle=':', 
+               alpha=0.6, label='12倍线（历史极值）')
     
+    ax.set_title('VIX策略：每月实际投入金额（不同颜色代表不同恐慌级别）', fontsize=16, fontweight='bold')
+    ax.set_xlabel('日期', fontsize=12)
+    ax.set_ylabel('投入金额 (USD)', fontsize=12)
+    
+    # 添加图例说明
     from matplotlib.patches import Patch
-    legend_elements = [Patch(facecolor=colors[k], label=k) for k in colors if k in df_vix['label'].values]
-    ax.legend(handles=legend_elements, loc='upper left')
+    legend_elements = []
+    for label, color in colors.items():
+        if label in df_vix['label'].values:
+            # 找出该标签对应的倍数
+            mult = df_vix[df_vix['label'] == label]['multiplier'].iloc[0] if len(df_vix[df_vix['label'] == label]) > 0 else 1
+            legend_elements.append(Patch(facecolor=color, label=f'{label} ({mult:.1f}x)'))
+    
+    # 添加水平线到图例
+    from matplotlib.lines import Line2D
+    legend_elements.append(Line2D([0], [0], color='gray', linestyle='--', label=f'基础定投额'))
+    
+    ax.legend(handles=legend_elements, loc='upper left', fontsize=10, ncol=2)
     ax.grid(True, alpha=0.3, axis='y')
+    ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'${x/1000:.0f}K'))
     plt.tight_layout()
     plt.savefig(CHARTS_DIR / 'monthly_investment.png', dpi=150)
     plt.close()
@@ -457,8 +548,11 @@ def generate_report(metrics_vix, metrics_plain, metrics_lump, df_vix, df_plain):
     ]
     
     for low, high, mult, label in BACKTEST_CONFIG['vix_rules']:
-        high_str = f"< {high}" if high < 999 else "≥ 30"
-        lines.append(f"| {low} ≤ VIX {high_str} | {mult:.1f}x | {label} |")
+        if high >= 999:
+            high_str = f"≥ {low}"
+        else:
+            high_str = f"{low}-{high}"
+        lines.append(f"| {high_str} | {mult:.1f}x | {label} |")
     
     lines.extend([
         "",
@@ -595,7 +689,7 @@ def main():
     print("=" * 70)
     
     # 生成图表和报告
-    generate_charts(df_vix, df_plain, df_lump, df)
+    generate_charts(df_vix, df_plain, df_lump, df, metrics_vix, metrics_plain, metrics_lump)
     generate_report(metrics_vix, metrics_plain, metrics_lump, df_vix, df_plain)
     
     print("\n回测完成！")
