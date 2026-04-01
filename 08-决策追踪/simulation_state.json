@@ -28,10 +28,10 @@
       "position_type": "核心",
       "realized_pnl": 0.0
     },
-    "0882.HK": {
+    "00882.HK": {
       "name": "天津发展",
       "code": "00882",
-      "ticker": "882.HK",
+      "ticker": "0882.HK",
       "shares": 40000,
       "avg_cost": 2.50,
       "sell_trigger": 4.5,
