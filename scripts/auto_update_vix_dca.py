@@ -25,6 +25,12 @@ try:
 except ImportError:
     YFINANCE_AVAILABLE = False
 
+try:
+    import pandas as pd
+except ImportError:
+    # pandas是必须的
+    pass
+
 import urllib.request
 import ssl
 
@@ -53,15 +59,18 @@ def get_vix_from_yfinance():
         return None
     try:
         vix = yf.Ticker(VIX_SYMBOL)
-        hist = vix.history(period="2d")
-        if len(hist) >= 1:
+        # 获取最近5天数据，确保有数据返回
+        hist = vix.history(period="5d", interval="1d")
+        if hist is not None and not hist.empty:
             latest = hist.iloc[-1]
+            # 获取实际日期
+            date_str = pd.Timestamp(hist.index[-1]).strftime('%Y-%m-%d') if hasattr(hist.index[-1], 'strftime') else str(hist.index[-1])[:10]
             return {
                 'value': round(float(latest['Close']), 2),
-                'date': hist.index[-1].strftime('%Y-%m-%d')
+                'date': date_str
             }
     except Exception as e:
-        print(f"yfinance获取VIX失败: {e}")
+        print(f"[VIX] yfinance获取失败: {e}")
     return None
 
 
@@ -90,22 +99,27 @@ def get_etf_price_from_akshare(date_str=None):
 
 
 def get_etf_price_from_yfinance():
-    """从yfinance获取ETF价格（通过场外基金近似）"""
+    """从yfinance获取ETF价格（通过QQQ近似）"""
     if not YFINANCE_AVAILABLE:
         return None
     try:
-        # 使用QQQ作为纳指100的参考
+        # 使用QQQ作为纳指100的参考（1份513110 ≈ 1/1000份QQQ，价格不同但走势一致）
         qqq = yf.Ticker("QQQ")
-        hist = qqq.history(period="2d")
-        if len(hist) >= 1:
+        hist = qqq.history(period="5d", interval="1d")
+        if hist is not None and not hist.empty:
             latest = hist.iloc[-1]
-            # 这里返回的是QQQ价格，需要换算或仅作参考
+            # QQQ和513110走势一致，但价格不同，这里仅用于获取涨跌幅度
+            # 实际价格还是用A股收盘价
+            prev = hist.iloc[-2] if len(hist) >= 2 else latest
+            change_pct = (latest['Close'] / prev['Close'] - 1) if prev['Close'] else 0
             return {
                 'price': round(float(latest['Close']), 2),
-                'date': hist.index[-1].strftime('%Y-%m-%d')
+                'change_pct': change_pct,
+                'date': hist.index[-1].strftime('%Y-%m-%d'),
+                'is_proxy': True  # 标记为代理数据
             }
     except Exception as e:
-        print(f"yfinance获取ETF价格失败: {e}")
+        print(f"[ETF] yfinance获取ETF价格失败: {e}")
     return None
 
 
@@ -123,13 +137,21 @@ def get_vix_data():
 
 def get_etf_price(date_str=None):
     """获取ETF价格，尝试多种数据源"""
-    # 优先尝试akshare（A股数据源）
-    result = get_etf_price_from_akshare(date_str)
+    target_date = date_str or datetime.now().strftime('%Y-%m-%d')
+    
+    # 优先尝试akshare fund_etf_spot_em（实时行情）
+    result = get_etf_price_from_akshare(target_date)
     if result:
-        print(f"[ETF] 从akshare获取: {result['price']} ({result['date']})")
+        print(f"[ETF] 从akshare spot获取: {result['price']} ({result['date']})")
         return result['price']
     
-    print("[ETF] 无法自动获取，请手动提供")
+    # 尝试yfinance获取QQQ作为参考（虽然不能直接用价格，但可以用于验证）
+    yf_result = get_etf_price_from_yfinance()
+    if yf_result:
+        print(f"[ETF] yfinance QQQ参考: {yf_result['price']} (涨跌: {yf_result['change_pct']*100:.2f}%)")
+        print(f"[ETF] ⚠️  注意：这是QQQ价格，不是513110的实际价格")
+    
+    print("[ETF] 无法自动获取513110的A股价格，请手动提供 --price 参数")
     return None
 
 
