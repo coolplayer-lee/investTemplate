@@ -143,10 +143,10 @@ onBeforeUnmount(() => {
     <div class="dd-header">
       <p v-if="showFullHeader">持仓/操作/决策记录统一来自同一数据快照。</p>
       <p v-else>查看明细页面（总览信息已收敛到“模拟持仓/总览”）。</p>
-      <button class="dd-refresh" @click="loadData">刷新数据</button>
+      <button class="dd-refresh" @click="loadData" @keydown.enter="loadData" aria-label="刷新数据">刷新数据</button>
     </div>
 
-    <div v-if="loading" class="dd-loading">加载中...</div>
+    <div v-if="loading" class="dd-loading">加载中…</div>
     <div v-else-if="error" class="dd-error">{{ error }}</div>
     <template v-else>
       <div class="dd-meta" v-if="showFullHeader">
@@ -191,7 +191,7 @@ onBeforeUnmount(() => {
           收益 {{ pct(data.portfolio.total_return_pct, 2) }}
         </span>
         <span>现金 {{ money(data.portfolio.cash) }} HKD</span>
-        <a :href="appLink('/模拟持仓/')">返回总览</a>
+        <a :href="appLink('/模拟持仓/')" aria-label="返回总览页面">返回总览</a>
       </div>
 
       <section v-if="showHome" class="dd-panel">
@@ -203,9 +203,9 @@ onBeforeUnmount(() => {
         </div>
         <h3>模块导航</h3>
         <div class="dd-home-links">
-          <a :href="appLink('/模拟持仓/持仓')" class="dd-home-link">持仓</a>
-          <a :href="appLink('/模拟持仓/今日操作')" class="dd-home-link">今日操作</a>
-          <a :href="appLink('/模拟持仓/决策记录')" class="dd-home-link">决策记录</a>
+          <a :href="appLink('/模拟持仓/持仓')" class="dd-home-link" aria-label="查看持仓明细">持仓</a>
+          <a :href="appLink('/模拟持仓/今日操作')" class="dd-home-link" aria-label="查看今日操作">今日操作</a>
+          <a :href="appLink('/模拟持仓/决策记录')" class="dd-home-link" aria-label="查看决策记录">决策记录</a>
         </div>
       </section>
 

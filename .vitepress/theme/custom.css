@@ -80,6 +80,23 @@ body.dashboard-wide .VPDoc.has-aside .content-container {
   cursor: pointer;
   background: linear-gradient(135deg, #0f766e, #0ea5a4);
   color: #fff;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.2s ease;
+  touch-action: manipulation;
+}
+
+.dd-refresh:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.3);
+  background: linear-gradient(135deg, #0d6a63, #0d9488);
+}
+
+.dd-refresh:active {
+  transform: translateY(0);
+}
+
+.dd-refresh:focus-visible {
+  outline: 2px solid #0ea5a4;
+  outline-offset: 2px;
 }
 
 .dd-meta {
@@ -148,10 +165,24 @@ body.dashboard-wide .VPDoc.has-aside .content-container {
   font-weight: 700;
   color: #0f766e;
   background: rgba(14, 165, 164, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.2s ease, background 0.2s ease;
+  touch-action: manipulation;
 }
 
 .dd-home-link:hover {
   border-color: #0ea5a4;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(14, 165, 164, 0.2);
+  background: rgba(14, 165, 164, 0.12);
+}
+
+.dd-home-link:active {
+  transform: translateY(0);
+}
+
+.dd-home-link:focus-visible {
+  outline: 2px solid #0ea5a4;
+  outline-offset: 2px;
 }
 
 .dd-panel {
@@ -196,6 +227,7 @@ body.dashboard-wide .VPDoc.has-aside .content-container {
   display: block;
   overflow-x: auto;
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .dd-empty {
@@ -337,6 +369,18 @@ body.dashboard-wide .VPDoc.has-aside .content-container {
 
 .down {
   color: #b91c1c;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dd-refresh,
+  .dd-home-link {
+    transition: none !important;
+  }
+
+  .dd-refresh:hover,
+  .dd-home-link:hover {
+    transform: none !important;
+  }
 }
 
 @media (max-width: 960px) {
