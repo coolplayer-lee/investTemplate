@@ -2,27 +2,26 @@
   "template_version": "V5.5.12",
   "engine_version": "V3.0",
   "initial_capital": 500000.0,
-  "cash": 52670.0,
-  "last_trade_date": "2026-04-08",
+  "cash": 109160.0,
+  "last_trade_date": "2026-03-26",
   "positions": {
     "1522.HK": {
       "name": "京投交通科技",
       "code": "01522",
       "ticker": "1522.HK",
       "shares": 342000,
-      "avg_cost": 0.365,
+      "avg_cost": 0.295,
       "sell_trigger": 0.6,
       "lot_size": 1000,
       "position_type": "核心",
-      "realized_pnl": 0.0,
-      "target_buy": 0.3
+      "realized_pnl": 0.0
     },
     "87001.HK": {
       "name": "汇贤产业信托",
       "code": "87001",
       "ticker": "87001.HK",
       "shares": 250000,
-      "avg_cost": 0.5,
+      "avg_cost": 0.432,
       "sell_trigger": 1.0,
       "lot_size": 1000,
       "position_type": "核心",
@@ -33,7 +32,7 @@
       "code": "00882",
       "ticker": "0882.HK",
       "shares": 40000,
-      "avg_cost": 2.5,
+      "avg_cost": 2.55,
       "sell_trigger": 4.5,
       "lot_size": 1000,
       "position_type": "核心",
@@ -44,7 +43,7 @@
       "code": "03320",
       "ticker": "3320.HK",
       "shares": 15000,
-      "avg_cost": 6.5,
+      "avg_cost": 5.33,
       "sell_trigger": 9.0,
       "lot_size": 1000,
       "position_type": "卫星",
@@ -56,7 +55,7 @@
       "ticker": "0696.HK",
       "shares": 0,
       "avg_cost": 0.0,
-      "sell_trigger": 0.0,
+      "sell_trigger": 0,
       "target_buy": null,
       "lot_size": 1000,
       "realized_pnl": 0.0
@@ -67,7 +66,7 @@
       "ticker": "2669.HK",
       "shares": 0,
       "avg_cost": 0.0,
-      "sell_trigger": 0.0,
+      "sell_trigger": 0,
       "target_buy": null,
       "lot_size": 1000,
       "realized_pnl": 0.0
@@ -78,7 +77,7 @@
       "ticker": "6049.HK",
       "shares": 0,
       "avg_cost": 0.0,
-      "sell_trigger": 0.0,
+      "sell_trigger": 0,
       "target_buy": null,
       "lot_size": 1000,
       "realized_pnl": 0.0
@@ -89,7 +88,7 @@
       "ticker": "002027.SZ",
       "shares": 0,
       "avg_cost": 0.0,
-      "sell_trigger": 8.370000000000001,
+      "sell_trigger": 8.37,
       "target_buy": 6.2,
       "lot_size": 100,
       "realized_pnl": 0.0
@@ -100,7 +99,7 @@
       "ticker": "3613.HK",
       "shares": 0,
       "avg_cost": 0.0,
-      "sell_trigger": 0.0,
+      "sell_trigger": 0,
       "target_buy": null,
       "lot_size": 1000,
       "realized_pnl": 0.0
@@ -133,7 +132,7 @@
       "ticker": "2869.HK",
       "shares": 0,
       "avg_cost": 0.0,
-      "sell_trigger": 0.0,
+      "sell_trigger": 0,
       "target_buy": null,
       "lot_size": 1000,
       "realized_pnl": 0.0
@@ -155,7 +154,7 @@
       "ticker": "1502.HK",
       "shares": 0,
       "avg_cost": 0.0,
-      "sell_trigger": 0.0,
+      "sell_trigger": 0,
       "target_buy": null,
       "lot_size": 1000,
       "realized_pnl": 0.0
