@@ -512,7 +512,7 @@ def update_markdown_template(state, date_str, vix, price):
     
     content = f"""# VIX定投策略 - 纳指100 ETF（**{ETF_CODE}**）
 
-> **标的代码：{ETF_CODE}** | 策略版本：V1.0 | 启动日期：2026-03-26  
+> **标的代码：{ETF_CODE}** | 策略版本：V1.0 | 启动日期：2026-03-24  
 > **买卖执行：每两周周二** | **收益更新：每日** | 投入本金：{principal:,.2f}元
 > **双周锚点：{anchor_date}（每双周周二定投）**
 
