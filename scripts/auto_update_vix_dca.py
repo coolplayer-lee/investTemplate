@@ -429,9 +429,11 @@ def update_dashboard_data(dashboard, state, date_str, vix, price, trade_info):
     acc = state['account']
     perf = state['daily_performance']
     stats = state['statistics']
+    schedule = state.get('schedule', {})
     principal = get_tracking_principal(state)
     cash = float(acc.get('cash', 0) or 0)
     total_assets = get_total_assets_value(state)
+    anchor_date = schedule.get('anchor_date', '未设置')
     next_trade_date = get_next_trade_date(state)
     days_until_next = None
     if next_trade_date:
@@ -512,6 +514,7 @@ def update_markdown_template(state, date_str, vix, price):
 
 > **标的代码：{ETF_CODE}** | 策略版本：V1.0 | 启动日期：2026-03-26  
 > **买卖执行：每两周周二** | **收益更新：每日** | 投入本金：{principal:,.2f}元
+> **双周锚点：{anchor_date}（每双周周二定投）**
 
 ---
 
