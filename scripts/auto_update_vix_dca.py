@@ -506,9 +506,13 @@ def update_markdown_template(state, date_str, vix, price):
     if len(snapshots) > 10:
         snapshots = snapshots[-10:]
     
+    schedule = state.get('schedule', {})
     # 计算下次定投日
     next_trade = get_next_trade_date(state)
     days_until = (datetime.strptime(next_trade, '%Y-%m-%d') - datetime.strptime(date_str, '%Y-%m-%d')).days if next_trade else None
+    upcoming_trades = schedule.get('upcoming_trade_dates', [])
+    if not upcoming_trades and next_trade:
+        upcoming_trades = [next_trade]
     
     content = f"""# VIX定投策略 - 纳指100 ETF（**{ETF_CODE}**）
 
@@ -569,8 +573,19 @@ def update_markdown_template(state, date_str, vix, price):
 
 | 日期 | 星期 | 状态 | 预计操作 |
 |------|------|------|----------|
-| {date_str} | {['一','二','三','四','五','六','日'][datetime.strptime(date_str, '%Y-%m-%d').weekday()]} | {'✅ 今日已更新' if date_str == datetime.now().strftime('%Y-%m-%d') else '已完成'} | 持仓更新 |
-| {next_trade if next_trade else '待配置'} | {['一','二','三','四','五','六','日'][datetime.strptime(next_trade, '%Y-%m-%d').weekday()] if next_trade else '-'} | ⏳ 等待 | {f'下次定投（{days_until}天后）' if days_until is not None else '请补充next_trade_date'} |
+"""
+
+    for trade_date in upcoming_trades[:4]:
+        week = ['一', '二', '三', '四', '五', '六', '日'][datetime.strptime(trade_date, '%Y-%m-%d').weekday()]
+        if trade_date == next_trade:
+            status = "⏳ 等待"
+            action = f"下次定投（{days_until}天后）" if days_until is not None else "待配置"
+        else:
+            status = "📅 计划中"
+            action = "双周定投"
+        content += f"| {trade_date} | {week} | {status} | {action} |\n"
+
+    content += f"""
 
 ---
 
