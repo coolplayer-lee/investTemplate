@@ -14,23 +14,23 @@
     "initial_capital": 100000,
     "currency": "CNY",
     "cash": 93994.0,
-    "last_update": "2026-04-17"
+    "last_update": "2026-04-20"
   },
   "position": {
     "shares": 3078,
     "avg_cost": 1.95,
     "total_cost": 6006.0,
-    "current_price": 2.026,
-    "market_value": 6236.027999999999,
-    "unrealized_pnl": 230.02799999999934,
-    "return_pct": 3.83
+    "current_price": 2.13,
+    "market_value": 6556.139999999999,
+    "unrealized_pnl": 550.1399999999994,
+    "return_pct": 9.16
   },
   "daily_performance": {
-    "date": "2026-04-17",
-    "vix": 17.94,
-    "daily_pnl": 0.0,
-    "total_pnl": 230.03,
-    "total_return_pct": 3.93
+    "date": "2026-04-20",
+    "vix": 17.48,
+    "daily_pnl": 320.11,
+    "total_pnl": 550.14,
+    "total_return_pct": 9.27
   },
   "statistics": {
     "cumulative_buy": 6000,
@@ -57,9 +57,9 @@
   "history": {
     "vix_high": 21.23,
     "vix_high_date": "2026-04-13",
-    "vix_low": 17.94,
-    "vix_low_date": "2026-04-17",
-    "max_unrealized_pnl": 230.02799999999934,
-    "max_unrealized_date": "2026-04-10"
+    "vix_low": 17.48,
+    "vix_low_date": "2026-04-20",
+    "max_unrealized_pnl": 550.1399999999994,
+    "max_unrealized_date": "2026-04-20"
   }
 }
