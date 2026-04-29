@@ -1,6 +1,6 @@
 {
   "strategy": "VIX定投策略_纳指100",
-  "version": "V1.0",
+  "version": "V2.0",
   "last_update": "2026-04-27",
   "account": {
     "initial_capital": 6000.0,
