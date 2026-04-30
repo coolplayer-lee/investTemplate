@@ -166,9 +166,10 @@ export default defineConfig({
   
   // 头部配置
   head: [
-    ['link', { rel: 'icon', href: '/favicon.ico' }],
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }],
-    ['link', { rel: 'icon', type: 'image/png', href: '/favicon.png' }],
+    ['link', { rel: 'shortcut icon', href: '/favicon.ico?v=20260430' }],
+    ['link', { rel: 'icon', href: '/favicon.ico?v=20260430' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg?v=20260430' }],
+    ['link', { rel: 'icon', type: 'image/png', href: '/favicon.png?v=20260430' }],
     ['meta', { name: 'author', content: '投资分析模板' }],
     ['meta', { name: 'keywords', content: '投资,港股,A股,价值投资者,股票筛选,估值模型' }]
   ]

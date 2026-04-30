@@ -5,7 +5,7 @@
   "installCommand": "npm install",
   "rewrites": [
     {
-      "source": "/((?!assets/).*)",
+      "source": "/((?!assets/|favicon\\.ico|favicon\\.svg|favicon\\.png|logo\\.svg|dashboard/|vix_strategy/).*)",
       "destination": "/$1.html"
     }
   ],
