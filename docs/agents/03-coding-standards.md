@@ -36,7 +36,7 @@ from typing import Dict, List, Optional
 
 # 配置集中管理
 SCREENING_CONFIG = {
-    "version": "V5.5.23",
+    "version": "V5.5.24",
     "criteria": {
         "pb_max": 0.6,
         "dividend_yield_min": 0.06,
@@ -139,7 +139,7 @@ jobs:
 ### 结构示例
 
 ```yaml
-version: "V5.5.23"
+version: "V5.5.24"
 
 # 仓位限制规则
 position_limits:

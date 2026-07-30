@@ -1,7 +1,7 @@
 # 01-项目概述
 
 > **项目语言**: 中文 (Chinese)
-> **当前版本**: V5.5.23（以 `config/template-version.yaml` 为准）
+> **当前版本**: V5.5.24（以 `config/template-version.yaml` 为准）
 
 ---
 

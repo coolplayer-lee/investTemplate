@@ -14,6 +14,10 @@ analysis_metadata:
   analyst: ""  # 分析人员
   annual_report_year: 2025  # 使用的年报年份（强制）
   annual_report_date: "2026-03-20"  # 年报发布日期
+  listing_board: "港股主板"  # 港股主板/A股主板/科创板/创业板/其他
+  workflow_status: "标准分析"  # 排除/独立高风险研究/标准分析
+  shareholder_relationship: "公司养股东"  # 公司养股东/相互供养/股东养公司/资本退出工具
+  explicit_high_risk_request: false  # 科创板/创业板只有用户明确要求时才可设为true
 
   # 时效性控制（强化）
   data_freshness_control:
@@ -312,6 +316,61 @@ historical_comparison:
       variance_percent: 0  # 自动计算
       explanation: ""  # 变动>30%必须解释
 
+# ========== 资本市场养分测试（V5.5.24新增）==========
+capital_market_nutrient_test:
+  full_test_required: false  # 科创板/创业板、亏损成长股、持续融资或高CAPEX公司必须为true
+  test_period: "2021-01-01/2025-12-31"  # 最近5年；上市不足5年则填上市日至报告基准日
+  classification: "公司养股东"  # 必须与analysis_metadata.shareholder_relationship一致
+
+  cumulative_equity_financing:
+    value: 0
+    unit: "HKD"
+    source: ""  # 年报、招股书、募集说明书或交易所公告
+    confidence: "S"
+
+  cumulative_dividends_and_net_buybacks:
+    value: 0
+    unit: "HKD"
+    source: ""
+    confidence: "S"
+
+  diluted_share_count_cagr:
+    value: 0  # 如0.03表示年均稀释3%
+    source: ""
+    confidence: "S"
+
+  cumulative_operating_cash_flow:
+    value: 0
+    unit: "HKD"
+    source: ""
+    confidence: "S"
+
+  cumulative_capex:
+    value: 0
+    unit: "HKD"
+    source: ""
+    confidence: "S"
+
+  incremental_roic:
+    value: 0
+    calculation: "增量税后经营利润 / 增量投入资本"
+    source: ""
+    confidence: "A"
+
+  fundraising_project_delivery_rate:
+    value: 0
+    source: ""
+    confidence: "A"
+
+  unlock_and_reduction_pressure:
+    next_date: ""
+    shares: 0
+    percent_of_total_shares: 0
+    source: ""
+    confidence: "S"
+
+  historical_price_anchor_excluded: false  # 必须为true：高点、发行价、融资价和跌幅不参与估值
+
 # ========== 交叉验证（强制）==========
 cross_validation:
   interest_rate_check:
@@ -371,6 +430,14 @@ validation_checklist:
     item: "数据时效性：确认使用最新完整年度年报，非中报/季报数据"
     checked: false
     freshness_explanation: ""  # 如使用中报需解释原因
+
+  - id: "shareholder_relationship"
+    item: "股东关系：已完成资本市场养分测试并给出公司养股东/相互供养/股东养公司/资本退出工具标签"
+    checked: false
+
+  - id: "historical_price_anchor"
+    item: "价格锚检查：历史高点、发行价、融资价和距高点跌幅未参与内在价值计算"
+    checked: false
 
 # ========== 数据勘误记录（如有）==========
 data_corrections:

@@ -4,7 +4,7 @@ layout: home
 hero:
   name: 投资分析模板
   text: 系统化价值投资框架
-  tagline: 港股/A股个股研究的标准化方法论 · V5.5.23
+  tagline: 港股/A股个股研究的标准化方法论 · V5.5.24
   image:
     src: /logo.svg
     alt: 投资分析模板
@@ -100,5 +100,5 @@ hero:
 ---
 
 <p align="center">
-  <small>当前版本: V5.5.23 | 最后更新: 2026-07-23</small>
+  <small>当前版本: V5.5.24 | 最后更新: 2026-07-30</small>
 </p>

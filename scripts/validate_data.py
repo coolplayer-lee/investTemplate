@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-数据质量硬校验脚本
+数据质量硬校验脚本（对应模板 V5.5.24）
 必须在生成报告前运行并通过
 
 使用方法：
@@ -64,7 +64,7 @@ class DataValidator:
         # 4. 利润数据校验（S级）
         self._validate_profit_data()
 
-        # 4.5 估值适用性与TTM时点校验（V5.5.23）
+        # 4.5 估值适用性与TTM时点校验（V5.5.23延续）
         self._validate_valuation_data()
         
         # 5. 现金流数据校验（S级）
@@ -72,6 +72,9 @@ class DataValidator:
         
         # 6. 股本数据校验（S级）
         self._validate_share_data()
+
+        # 6.5 股东关系、双创板边界和历史价格锚校验（V5.5.24）
+        self._validate_shareholder_relationship()
         
         # 7. 计算指标校验
         self._validate_calculated_metrics()
@@ -117,7 +120,14 @@ class DataValidator:
         
         meta = self.data.get('analysis_metadata', {})
         
-        required_fields = ['stock_code', 'stock_name', 'annual_report_year']
+        required_fields = [
+            'stock_code',
+            'stock_name',
+            'annual_report_year',
+            'listing_board',
+            'workflow_status',
+            'shareholder_relationship',
+        ]
         for field in required_fields:
             if not meta.get(field):
                 self.errors.append(f"[METADATA] 缺少必填字段: {field}")
@@ -133,6 +143,69 @@ class DataValidator:
 
         if not any(e for e in self.errors if e.startswith('[METADATA]')):
             print("   [PASS] 元数据校验通过")
+
+    def _validate_shareholder_relationship(self):
+        """校验资本市场养分测试、双创板调用边界和历史价格锚。"""
+        print("\n[6.5] 股东关系与上市板块边界校验（V5.5.24）")
+
+        meta = self.data.get('analysis_metadata', {})
+        nutrient = self.data.get('capital_market_nutrient_test', {})
+        listing_board = meta.get('listing_board', '')
+        workflow_status = meta.get('workflow_status', '')
+        relationship = meta.get('shareholder_relationship', '')
+
+        allowed_boards = {'港股主板', 'A股主板', '科创板', '创业板', '其他'}
+        allowed_statuses = {'排除', '独立高风险研究', '标准分析'}
+        allowed_relationships = {'公司养股东', '相互供养', '股东养公司', '资本退出工具'}
+
+        if listing_board not in allowed_boards:
+            self.errors.append(f"[BOARD] 不支持的上市板块: {listing_board}")
+        if workflow_status not in allowed_statuses:
+            self.errors.append(f"[BOARD] 不支持的流程状态: {workflow_status}")
+        if relationship not in allowed_relationships:
+            self.errors.append(f"[NUTRIENT] 不支持的股东关系标签: {relationship}")
+
+        if listing_board in {'科创板', '创业板'}:
+            if workflow_status == '标准分析':
+                self.errors.append("[BOARD] 科创板/创业板不得进入防御型价值投资标准流程")
+            if workflow_status == '独立高风险研究' and not meta.get('explicit_high_risk_request', False):
+                self.errors.append("[BOARD] 双创板独立高风险研究必须有用户明确请求")
+            if workflow_status == '独立高风险研究' and not nutrient.get('full_test_required', False):
+                self.errors.append("[NUTRIENT] 科创板/创业板必须完成完整资本市场养分测试")
+
+        if relationship in {'股东养公司', '资本退出工具'} and workflow_status == '标准分析':
+            self.errors.append(f"[NUTRIENT] {relationship}不得进入标准分析流程")
+
+        if nutrient.get('classification') != relationship:
+            self.errors.append("[NUTRIENT] 养分测试分类与元数据股东关系标签不一致")
+
+        if nutrient.get('full_test_required', False):
+            if not nutrient.get('test_period'):
+                self.errors.append("[NUTRIENT] 完整养分测试必须填写统计区间")
+
+            required_source_fields = [
+                'cumulative_equity_financing',
+                'cumulative_dividends_and_net_buybacks',
+                'diluted_share_count_cagr',
+                'cumulative_operating_cash_flow',
+                'cumulative_capex',
+                'incremental_roic',
+                'fundraising_project_delivery_rate',
+                'unlock_and_reduction_pressure',
+            ]
+            for field_name in required_source_fields:
+                field_data = nutrient.get(field_name, {})
+                if not isinstance(field_data, dict) or not field_data.get('source'):
+                    self.errors.append(f"[NUTRIENT] 完整养分测试缺少来源: {field_name}")
+
+        if not nutrient.get('historical_price_anchor_excluded', False):
+            self.errors.append("[VALUATION_ANCHOR] 必须确认历史价格锚未参与内在价值计算")
+
+        if not any(
+            e for e in self.errors
+            if e.startswith(('[BOARD]', '[NUTRIENT]', '[VALUATION_ANCHOR]'))
+        ):
+            print("   [PASS] 股东关系与上市板块边界校验通过")
     
     def _validate_data_freshness(self, meta: Dict[str, Any]):
         """校验数据时效性（强化）"""
