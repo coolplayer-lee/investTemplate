@@ -1,13 +1,13 @@
-# 风控规则配置（V5.5.13）
+# 风控规则配置（派生自V5.5.24当前仓位政策）
 # 个股投资风险管理规则
 
-version: "5.5.13"
-last_updated: "2026-03-29"
+version: "5.5.24-r1"
+last_updated: "2026-08-20"
 
 # ==================== 仓位限制 ====================
 position_limits:
   纯硬收息型:
-    single_stock_max: 0.15    # 单标上限 15%
+    single_stock_max: 0.10    # 单标实际仓位上限 10%
     single_stock_min: 0.05    # 单标下限 5%
     sector_max: 0.30          # 行业上限 30%（如银行业）
     description: "内银行股等高股息标的"

@@ -145,7 +145,7 @@ version: "V5.5.24"
 position_limits:
   core_position_pct: 10        # 核心仓位上限(%)
   satellite_position_pct: 5    # 卫星仓位上限(%)
-  single_stock_max_pct: 20     # 单只个股上限(%)
+  single_stock_max_pct: 10     # 单只个股实际仓位上限(%)
 
 # 止损规则
 stop_loss:

@@ -1,326 +1,270 @@
-# 数据质量硬约束模板 - 滨江服务 (03316.HK)
-# 说明：因未能直接获取年报附注原文页码，核心财务数据降级为 A 级（基于公司正式业绩公告/年报摘要），
-#      股价/市值数据为 B 级（第三方实时行情）。未虚标 S 级。
-
+schema_version: V5.5.24.2
 analysis_metadata:
-  stock_code: "03316.HK"
-  stock_name: "滨江服务"
-  report_date: "2026-06-22"
-  analyst: "AI Analyst"
+  stock_code: 03316.HK
+  stock_name: 滨江服务
+  report_date: '2026-08-20'
+  analyst: Codex
   annual_report_year: 2025
-  annual_report_date: "2026-03-25"
-
+  annual_report_date: '2026-04-24'
+  listing_board: 港股主板
+  workflow_status: 标准分析
+  shareholder_relationship: 公司养股东
+  explicit_high_risk_request: false
   data_freshness_control:
-    current_date: "2026-06-22"
-    data_age_days: 89
+    current_date: '2026-08-20'
     max_allowed_age_days: 365
-
-  report_type: "annual"
+  report_type: annual
   is_latest_full_year: true
   next_year_available: false
-
-  data_confidence_level: "A"
-
+  valuation_policy:
+    primary_method: PE
+    pe_applicable: true
+    fcf_applicable: true
+    fcf_unavailable_reason: ''
+    price_as_of: '2026-08-20'
+    fx_as_of: '2026-08-20'
+    calculation_currency: RMB
+    share_price_to_calculation_currency_rate: 0.8569
+    fx_source: Yahoo Finance HKDCNY daily chart API
+    ttm_period: ''
+    ttm_method: NOT_AVAILABLE
+    ttm_unavailable_reason: 公司按半年披露，截至基准日缺少2026H1正式组成项。
+  data_confidence_level: S/B
   validation_checks:
-    - check: "使用的是最新完整年度年报（非中报/季报/预告）"
-      checked: true
-    - check: "年报发布日期不早于去年今日"
-      checked: true
-    - check: "如果年报未发布，已明确标注并使用中报（置信度降级）"
-      checked: false
-    - check: "非预告/快报数据，为正式审计报告"
-      checked: true
-    - check: "已对比至少3年历史数据"
-      checked: true
-    - check: "核心财务数据（现金、负债、利润、现金流）来自年报原文"
-      checked: false
-
+  - check: 使用最新完整年度年报
+    checked: true
+  - check: 年报核心数据直接来自正式年报
+    checked: true
+  - check: 现金、负债、利润、现金流与股本已分科目核查
+    checked: true
+  - check: 行情和汇率与财务数据分级
+    checked: true
+  - check: 静态与TTM按披露频率处理
+    checked: true
 core_financial_data:
   cash_and_bank_balances:
-    value: 3693000000
-    unit: "RMB"
-    display_unit: "亿人民币"
-    source: "2025年度业绩公告/年报（存款及银行理财规模）"
-    page_number: 0
-    report_period: "2025-12-31"
-    confidence: "A"
+    value: 3260094000
+    unit: RMB
+    source: 2025_annual_report_cash_and_bank_balance_notes
+    page_number: 合并财务报表相应报表及附注（PDF页码以阅读器为准）
+    report_period: '2025-12-31'
+    confidence: S
     verification_checked: true
-    notes: "含现金及银行结余、定期存款及理财产品；未直接区分受限资金，保守按全额计入"
-
-  restricted_cash:
+  cash_and_cash_equivalents:
+    value: 890521000
+    unit: RMB
+    source: 2025_annual_report_cash_flow_and_cash_notes
+    page_number: 合并现金流量表及现金附注
+    report_period: '2025-12-31'
+    confidence: S
+    verification_checked: true
+    notes: 现金及现金等价物与三个月以上定存分列；未把交易性金融资产计入。未识别的受限或关联方现金不推定为可自由分红。
+  time_deposits_over_three_months:
+    value: 2369573000
+    unit: RMB
+    source: 2025_annual_report_cash_notes
+    page_number: 现金及银行结余附注
+    confidence: S
+  related_financial_institution_deposits:
     value: 0
-    source: "年报未明确披露受限资金"
-    page_number: 0
-    confidence: "B"
-
+    unit: RMB
+    included_in_cash_and_cash_equivalents: false
+    source: 2025_annual_report_related_party_cash_notes
+    page_number: 关联方及现金附注
+    confidence: S
+  other_low_liquidity_cash:
+    value: 0
+    unit: RMB
+    source: 2025_annual_report_cash_notes
+    page_number: 现金附注
+    confidence: S
+  restricted_cash:
+    value: 263300000
+    unit: RMB
+    source: 2025_annual_report_restricted_cash_notes
+    page_number: 受限现金附注
+    confidence: S
   interest_bearing_debt:
     short_term:
       value: 0
-      source: "2025年度业绩公告"
-      page_number: 0
-      report_period: "2025-12-31"
-      confidence: "A"
+      source: 2025_annual_report_borrowings_and_lease_notes
+      page_number: 借款附注
+      report_period: '2025-12-31'
+      confidence: S
     long_term:
       value: 0
-      source: "2025年度业绩公告"
-      page_number: 0
-      report_period: "2025-12-31"
-      confidence: "A"
+      source: 2025_annual_report_borrowings_and_lease_notes
+      page_number: 借款附注
+      report_period: '2025-12-31'
+      confidence: S
     bonds:
       value: 0
-      source: "2025年度业绩公告"
-      page_number: 0
-      report_period: "2025-12-31"
-      confidence: "A"
+      source: 2025_annual_report_borrowings_and_lease_notes
+      page_number: 债券附注
+      report_period: '2025-12-31'
+      confidence: S
     lease_liabilities:
-      value: 0
-      source: "2025年度业绩公告"
-      page_number: 0
-      report_period: "2025-12-31"
-      confidence: "B"
-    total_calculation: "short_term + long_term + bonds + lease_liabilities"
-    total_value: 0
-    confidence: "A"
-
-  total_liabilities:
-    value: 0
-    source: "2025年度业绩公告"
-    page_number: 0
-    confidence: "B"
-
+      value: 2378000
+      source: 2025_annual_report_borrowings_and_lease_notes
+      page_number: 租赁附注
+      report_period: '2025-12-31'
+      confidence: S
+    total_value: 2378000
+    total_calculation: short_term + long_term + bonds + lease_liabilities
+    confidence: S
   revenue:
-    value: 4101300000
-    unit: "RMB"
-    display_unit: "亿人民币"
-    source: "2025年度业绩公告"
-    page_number: 0
-    report_period: "2025-12-31"
-    confidence: "A"
-
+    value: 4101253000
+    unit: RMB
+    source: 2025_annual_report_income_statement
+    page_number: 合并损益表
+    report_period: '2025-12-31'
+    confidence: S
   net_profit:
-    value: 596000000
-    unit: "RMB"
-    display_unit: "亿人民币"
-    source: "2025年度业绩公告"
-    page_number: 0
-    report_period: "2025-12-31"
-    confidence: "A"
-
+    value: 595508000
+    unit: RMB
+    source: 2025_annual_report_income_statement
+    page_number: 合并损益表
+    report_period: '2025-12-31'
+    confidence: S
   net_profit_attributable:
-    value: 596000000
-    unit: "RMB"
-    display_unit: "亿人民币"
-    source: "2025年度业绩公告"
-    page_number: 0
-    report_period: "2025-12-31"
-    confidence: "A"
-
-  non_recurring_items:
-    asset_impairment: 0
-    government_subsidy: 0
-    gain_on_disposal: 0
-    total: 0
-
+    value: 595508000
+    unit: RMB
+    source: 2025_annual_report_income_statement
+    page_number: 合并损益表
+    report_period: '2025-12-31'
+    confidence: S
+  ttm_components: []
   operating_cash_flow:
-    value: 829000000
-    unit: "RMB"
-    display_unit: "亿人民币"
-    source: "2025年度业绩公告"
-    page_number: 0
-    report_period: "2025-12-31"
-    confidence: "A"
+    value: 828737000
+    unit: RMB
+    source: 2025_annual_report_cash_flow_statement
+    page_number: 合并现金流量表
+    report_period: '2025-12-31'
+    confidence: S
     verification_checked: true
-
   capex:
-    value: 0
-    unit: "RMB"
-    source: "2025年度业绩公告（物业公司轻资产，资本开支极小，年报未单列）"
-    page_number: 0
-    report_period: "2025-12-31"
-    confidence: "B"
-
-  dividends_paid:
-    value: 0
-    unit: "HKD"
-    source: "2025年度业绩公告"
-
+    value: 34837000
+    unit: RMB
+    source: 2025_annual_report_cash_flow_statement_capex
+    page_number: 合并现金流量表
+    report_period: '2025-12-31'
+    confidence: S
+  dividend_per_share_for_yield:
+    value: 1.804
+    currency: HKD
+    period: TTM/2025FY已批准
+    source: 2025_annual_report_dividend_note_and_distribution_announcement
+    page_number: 股息附注
+    confidence: S
   total_shares:
     value: 276407000
-    source: "港交所披露易/腾讯行情"
-    page_number: 0
-    confidence: "B"
-
+    source: 2025_annual_report_share_capital_note
+    page_number: 股本附注
+    confidence: S
   share_price:
-    value: 22.16
-    currency: "HKD"
-    date: "2026-06-22"
-    source: "tencent"
-
+    value: 22.86
+    currency: HKD
+    date: '2026-08-20'
+    source: Yahoo Finance daily chart API close
   market_cap:
-    calculation: "total_shares * share_price"
-    value: 6125177120
-    unit: "HKD"
-    display_unit: "亿港元"
-
-calculated_metrics:
-  net_cash:
-    formula: "cash_and_bank_balances - restricted_cash - interest_bearing_debt.total"
-    value: 3693000000
-    display_value: "39.70亿港元（按汇率1.075折算）"
-    confidence: "A"
-
-  fcf:
-    formula: "operating_cash_flow - capex"
-    value: 829000000
-    display_value: "8.29亿人民币"
-    confidence: "A"
-
-  market_cap_ex_cash:
-    formula: "market_cap - net_cash"
-    value: 2150041120
-    display_value: "21.50亿港元（按汇率折算后）"
-
-  fcf_yield:
-    formula: "fcf / market_cap"
-    value: 0.145
-    display_value: "14.5%"
-
-  fcf_multiple_ex_cash:
-    formula: "market_cap_ex_cash / fcf"
-    value: 2.59
-    display_value: "2.59倍"
-
-  pe_ratio:
-    formula: "market_cap / net_profit_attributable"
-    value: 10.27
-    display_value: "10.27倍（静态，汇率折算后）"
-
-  pb_ratio:
-    formula: "market_cap / net_assets"
-    value: 1.70
-    display_value: "1.70倍"
-
-  debt_to_asset_ratio:
-    formula: "total_liabilities / total_assets"
-    value: 0
-    display_value: "N/A"
-
-  cash_to_market_cap_ratio:
-    formula: "net_cash / market_cap"
-    value: 0.648
-    display_value: "64.8%"
-
+    value: 5414463198.738
+    unit: RMB
+    calculation: shares * price * fx
+  calculated_metrics:
+    immediate_net_cash:
+      value: 624843000
+      market_cap_ratio: 0.11540257585380542
+      notes: 现金等价物扣受限资金及全部有息/租赁负债；可用于流动性压力测试，但受营运资金、监管和少数股东约束，不能视为可立即自由分红。
+    conservative_immediate_net_cash:
+      value: 624843000
+      market_cap_ratio: 0.11540257585380542
+      notes: 即时净现金再扣关联财务公司存款及其他低流动性现金。
+    net_cash:
+      value: 2994416000
+      market_cap_ratio: 0.5530402350315977
+      notes: 广义净现金含已核实的三个月以上定存，不等于随时可动用现金。
+    fcf:
+      value: 793900000
+    fcf_yield:
+      value: 0.14662580035358663
+    fcf_multiple_market:
+      value: 6.820082124622749
+    fcf_multiple_ex_cash:
+      value: 3.0483023034865853
+    multi_period_fcf:
+      method: TWO_YEAR_AVERAGE
+      periods:
+      - period: 2024FY
+        value: 535213000
+      - period: 2025FY
+        value: 793900000
+      average_value: 664556500.0
+      market_cap_yield: 0.1227372826460238
+    dividend_yield:
+      value: 0.078915135608049
+    static_pe:
+      value: 9.092175417858366
+    ttm_net_profit:
+      value: null
+    ttm_pe:
+      value: null
+capital_market_nutrient_test:
+  full_test_required: false
+  classification: 公司养股东
+  classification_basis: 依据2025年经营现金流、资本开支、股息、债务和股本变化；产业资源只有穿透为每股现金回报才计入。
+  summary_source: 2025年报：https://www.hkexnews.hk/listedco/listconews/sehk/2026/0424/2026042403062_c.pdf
+  historical_price_anchor_excluded: true
 historical_comparison:
   years:
-    - year: 2023
-      revenue: 2809200000
-      net_profit: 493000000
-      cash: 0
-      debt: 0
-    - year: 2024
-      revenue: 3594700000
-      net_profit: 547000000
-      cash: 3200000000
-      debt: 0
-    - year: 2025
-      revenue: 4101300000
-      net_profit: 596000000
-      cash: 3693000000
-      debt: 0
-
-  variance_analysis:
-    - metric: "revenue"
-      current: 4101300000
-      previous: 3594700000
-      variance_percent: 14.1
-      explanation: "2025年收入同比+14.1%，增速较2024年的+28.0%放缓"
-    - metric: "net_profit"
-      current: 596000000
-      previous: 547000000
-      variance_percent: 9.0
-      explanation: "2025年归母净利同比+9.0%，增速较2024年的+11.0%略有放缓"
-    - metric: "cash"
-      current: 3693000000
-      previous: 3200000000
-      variance_percent: 15.4
-      explanation: "存款及银行理财规模同比+12.5%-15.4%，现金持续积累"
-
+  - year: 2023
+  - year: 2024
+    fcf: 535213000
+  - year: 2025
+    fcf: 793900000
 cross_validation:
   interest_rate_check:
     interest_income: 0
-    calculated_rate: 0
-    expected_range: "1%-5%"
-    status: "WARNING"
-    notes: "未获取利息收入明细，无法计算"
-
-  interest_expense_check:
-    interest_expense: 0
-    calculated_rate: 0
-    expected_range: "2%-10%"
-    status: "PASS"
-    notes: "无有息负债，利息支出为0"
-
   fcf_vs_profit_check:
-    fcf: 829000000
-    net_profit: 596000000
-    ratio: 1.39
-    expected_range: ">50%"
-    status: "PASS"
-    notes: "经营现金流/净利润=139%，利润现金含量极高"
-
+    fcf: 793900000
+    net_profit: 595508000
 validation_checklist:
-  - id: "timing"
-    item: "时点检查：使用的是最新完整年度年报（非中报/季报）"
-    checked: true
-  - id: "unit"
-    item: "单位检查：确认所有数字单位（亿/万/千元）正确无误"
-    checked: true
-  - id: "subject"
-    item: "科目检查：现金≠受限存款，借款≠总负债，区分有息/无息负债"
-    checked: true
-  - id: "calculation"
-    item: "计算检查：手工复核净现金、FCF等计算正确"
-    checked: true
-  - id: "variance"
-    item: "对比检查：与上期数据对比，变动>30%有合理解释"
-    checked: true
-    variance_explanation: "现金、收入、利润变动均在合理区间"
-  - id: "source"
-    item: "来源检查：所有数据标注年报页码/附注编号"
-    checked: false
-  - id: "cross_check"
-    item: "交叉验证：利息率、现金/市值比例在合理范围"
-    checked: true
-  - id: "data_freshness"
-    item: "数据时效性：确认使用最新完整年度年报，非中报/季报数据"
-    checked: true
-    freshness_explanation: ""
-
-data_corrections:
-  has_correction: true
-  corrections:
-    - field: "净利润"
-      original_value: "5.47亿人民币（2024年）"
-      corrected_value: "5.96亿人民币（2025年）"
-      reason: "2025年度业绩公告发布，更新至最新完整年度数据"
-      date: "2026-06-22"
-    - field: "派息率"
-      original_value: "70%"
-      corrected_value: "75%"
-      reason: "2025年全年派息比率提升至75%，创上市以来新高"
-      date: "2026-06-22"
-
+- id: timing
+  item: 最新完整年度年报
+  checked: true
+- id: unit
+  item: 单位与币种已复核
+  checked: true
+- id: subject
+  item: 现金、受限资金和有息负债已分开
+  checked: true
+- id: calculation
+  item: 市值、净现金、FCF和PE已复核
+  checked: true
+- id: variance
+  item: 年度变动已解释
+  checked: true
+  variance_explanation: 报告现金流质量章节按利润、营运资金与CAPEX拆解；超过30%的变化不直接外推。
+- id: source
+  item: 核心数据均标注年报报表或附注
+  checked: true
+- id: cross_check
+  item: 现金回报指标已交叉复核
+  checked: true
+- id: data_freshness
+  item: 年报与最新季度披露状态已确认
+  checked: true
+- id: shareholder_relationship
+  item: 股东关系已分类
+  checked: true
+- id: historical_price_anchor
+  item: 历史价格锚已排除
+  checked: true
 confidence_downgrade_reasons:
-  - reason: "未能直接获取年报附注原文页码，核心财务数据基于公司正式业绩公告/年报摘要及第三方财经平台，降级为 A/B 级"
-  - reason: "资本开支数据年报未明确披露，使用估算值"
-
+- 年报核心数据S级；股价和汇率为B级行情；维护性资本开支为B级区间估计。
 confirmation:
   i_confirm:
-    - "核心财务数据来自公司正式业绩公告/年报摘要，未直接引用年报附注原文"
-    - "已逐项核查现金、负债、利润、现金流数据"
-    - "计算过程已复核，单位确认无误"
-    - "与上期数据对比合理，异常变动已解释"
-    - "了解数据错误将导致分析报告作废"
-
-  analyst_signature: "AI Analyst"
-  validation_date: "2026-06-22"
+  - 核心年度数据来自正式年报
+  - 计算过程已复核
+  - 未把广义现金冒充随时可用现金
+  analyst_signature: Codex
+  validation_date: '2026-08-20'

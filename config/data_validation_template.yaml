@@ -1,4 +1,5 @@
 # 数据质量硬约束模板
+schema_version: "V5.5.24.2"
 # 每次分析前必须填写此模板，数据不通过校验则阻止生成报告
 # 
 # 使用说明：
@@ -37,9 +38,16 @@ analysis_metadata:
   valuation_policy:
     primary_method: "PE"  # PE/PB/DPU_FFO/MID_CYCLE/PS/PROBABILITY_WEIGHTED
     pe_applicable: true
+    fcf_applicable: true  # REITs等不适用报告口径FCF时填false，相关数值保持null
+    fcf_unavailable_reason: ""  # fcf_applicable=false时必填
     price_as_of: "2026-03-20"
     fx_as_of: "2026-03-20"
+    calculation_currency: "HKD"  # 所有估值分子、分母统一使用的币种
+    share_price_to_calculation_currency_rate: 1.0  # 1单位交易币种折合多少计算币种；同币种填1
+    fx_source: ""  # 交易所、央行或可信金融数据源
     ttm_period: "2025-04-01/2026-03-31"
+    ttm_method: "ANNUAL_PLUS_INTERIM"  # FOUR_QUARTERS/ANNUAL_PLUS_INTERIM/NOT_AVAILABLE
+    ttm_unavailable_reason: ""  # ttm_method=NOT_AVAILABLE时必填
 
   data_confidence_level: "S"  # 整体置信度 S/A/B/C/D
 
@@ -70,6 +78,39 @@ core_financial_data:
     confidence: "S"  # 必须是S
     verification_checked: false  # 必须改为 true
     notes: ""  # 备注（如是否含受限存款）
+
+  cash_and_cash_equivalents:
+    value: 0  # 原始期限通常不超过3个月、用于满足短期现金承诺的现金
+    unit: "HKD"
+    source: ""
+    page_number: 0
+    report_period: "2025-12-31"
+    confidence: "S"
+    verification_checked: false
+    notes: ""  # 必须说明是否含受限现金、关联方财务公司存款
+
+  time_deposits_over_three_months:
+    value: 0  # 原始期限超过3个月的定期存款；即使能提前支取也不得计入即时现金
+    unit: "HKD"
+    source: ""
+    page_number: 0
+    confidence: "S"
+
+  related_financial_institution_deposits:
+    value: 0  # 存放于控股股东/关联方财务公司的款项，即使会计上属于现金等价物也单列
+    included_in_cash_and_cash_equivalents: false
+    unit: "HKD"
+    source: ""
+    page_number: 0
+    confidence: "S"
+
+  other_low_liquidity_cash:
+    value: 0  # 其他低流动性、不可自由归属或需审慎扣减的现金
+    unit: "HKD"
+    source: ""
+    page_number: 0
+    confidence: "S"
+    notes: ""
   
   restricted_cash:
     value: 0  # 受限制存款（需从现金中扣除）
@@ -146,28 +187,32 @@ core_financial_data:
     report_period: "2025-12-31"  # 报表期
     confidence: "S"
 
-  # TTM数据（V5.5.23新增；PE适用时必须逐季度填写）
-  ttm_quarters:
-    - period: "2025Q2"
+  # TTM组成项。季度制填4个operator=1；港股常见半年制填“最近年度+本期中期-上年同期中期”。
+  ttm_components:
+    - role: "latest_annual"
+      period: "2025FY"
+      operator: 1
       value: 0
+      unit: "HKD"
       source: ""
       page_number: 0
-      confidence: "A"
-    - period: "2025Q3"
+      confidence: "S"
+    - role: "current_interim"
+      period: "2026H1"
+      operator: 1
       value: 0
+      unit: "HKD"
       source: ""
       page_number: 0
-      confidence: "A"
-    - period: "2025Q4"
+      confidence: "S"
+    - role: "prior_interim"
+      period: "2025H1"
+      operator: -1
       value: 0
+      unit: "HKD"
       source: ""
       page_number: 0
-      confidence: "A"
-    - period: "2026Q1"
-      value: 0
-      source: ""
-      page_number: 0
-      confidence: "A"
+      confidence: "S"
   
   non_recurring_items:
     asset_impairment: 0  # 资产减值
@@ -199,6 +244,14 @@ core_financial_data:
     value: 0  # 派息金额
     unit: "HKD"
     source: "cash_flow_statement_financing"  # 筹资活动现金流
+
+  dividend_per_share_for_yield:
+    value: 0  # 实际或已批准每股股息；零派息明确填0
+    currency: "HKD"  # 必须与share_price.currency一致
+    period: "2025FY"
+    source: ""
+    page_number: 0
+    confidence: "S"
   
   # ========== 股本数据（S级强制）==========
   total_shares:
@@ -214,17 +267,35 @@ core_financial_data:
     source: "hkex"  # hkex/bloomberg
   
   market_cap:
-    calculation: "total_shares * share_price"
+    calculation: "total_shares * share_price * share_price_to_calculation_currency_rate"
     value: 0  # 自动计算
-    unit: "HKD"
+    unit: "HKD"  # 必须等于valuation_policy.calculation_currency
     display_unit: "亿港元"
   
   # ========== 计算指标（自动计算）==========
   calculated_metrics:
+    immediate_net_cash:
+      formula: "cash_and_cash_equivalents - restricted_cash - interest_bearing_debt.total"
+      value: 0
+      display_value: ""
+      market_cap_ratio: 0
+      notes: ""  # 必须回答能否立即动用；不得直接写成可自由分红现金
+      confidence: "A"
+
+    conservative_immediate_net_cash:
+      formula: "immediate_net_cash - related_financial_institution_deposits_in_cash_equivalents - other_low_liquidity_cash"
+      value: 0
+      display_value: ""
+      market_cap_ratio: 0
+      notes: ""
+      confidence: "A"
+
     net_cash:
       formula: "cash_and_bank_balances - restricted_cash - interest_bearing_debt.total"
       value: 0  # 自动计算
       display_value: ""  # 如"22.73亿港元"
+      market_cap_ratio: 0
+      notes: "广义净现金口径；必须说明是否含超过3个月定期存款"
       confidence: "A"  # 计算值自动降级为A
     
     fcf:
@@ -249,6 +320,33 @@ core_financial_data:
       formula: "fcf / market_cap"
       value: 0  # 自动计算（如0.12表示12%）
       display_value: ""
+
+    fcf_multiple_market:
+      formula: "market_cap / fcf"
+      value: 0  # FCF<=0时为null并说明不适用
+      display_value: ""
+
+    multi_period_fcf:
+      method: "TWO_YEAR_AVERAGE"  # TWO_YEAR_AVERAGE/THREE_YEAR_AVERAGE/NOT_AVAILABLE
+      periods:
+        - period: "2024FY"
+          value: 0
+          source: ""
+          page_number: 0
+        - period: "2025FY"
+          value: 0
+          source: ""
+          page_number: 0
+      average_value: 0
+      market_cap_yield: 0
+      unavailable_reason: ""
+      confidence: "A"
+
+    dividend_yield:
+      formula: "dividend_per_share_for_yield / share_price"
+      value: 0
+      display_value: ""
+      notes: "股息是FCF的分配组成，不得与FCF收益率相加"
     
     fcf_multiple_ex_cash:
       formula: "market_cap_ex_cash / fcf"
@@ -266,13 +364,13 @@ core_financial_data:
       display_value: ""
 
     ttm_net_profit:
-      formula: "sum(ttm_quarters.value)"
-      value: 0
+      formula: "sum(ttm_components.operator * ttm_components.value)"
+      value: null  # ttm_method=NOT_AVAILABLE时保持null
       display_value: ""
 
     ttm_pe:
       formula: "market_cap / ttm_net_profit"
-      value: 0
+      value: null  # ttm_method=NOT_AVAILABLE时保持null
       display_value: ""
     
     pb_ratio:
@@ -321,6 +419,8 @@ capital_market_nutrient_test:
   full_test_required: false  # 科创板/创业板、亏损成长股、持续融资或高CAPEX公司必须为true
   test_period: "2021-01-01/2025-12-31"  # 最近5年；上市不足5年则填上市日至报告基准日
   classification: "公司养股东"  # 必须与analysis_metadata.shareholder_relationship一致
+  classification_basis: ""  # 必填：用融资、返还、稀释、FCF和减持数据解释标签
+  summary_source: ""  # 简版测试也必须给出年报/交易所披露来源
 
   cumulative_equity_financing:
     value: 0

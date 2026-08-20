@@ -1,0 +1,507 @@
+# 数据质量硬约束 - 保利物业（06049.HK）
+schema_version: "V5.5.24.2"
+
+analysis_metadata:
+  stock_code: "06049.HK"
+  stock_name: "保利物业"
+  report_date: "2026-08-20"
+  analyst: "Codex"
+  annual_report_year: 2025
+  annual_report_date: "2026-03-31"
+  listing_board: "港股主板"
+  workflow_status: "标准分析"
+  shareholder_relationship: "公司养股东"
+  explicit_high_risk_request: false
+
+  data_freshness_control:
+    current_date: "2026-08-20"
+    data_age_days: 142
+    max_allowed_age_days: 365
+
+  report_type: "annual"
+  is_latest_full_year: true
+  next_year_available: false
+
+  valuation_policy:
+    primary_method: "PE"
+    pe_applicable: true
+    price_as_of: "2026-08-20"
+    fx_as_of: "2026-08-20"
+    calculation_currency: "RMB"
+    share_price_to_calculation_currency_rate: 0.8568
+    fx_source: "Yahoo Finance HKDCNY=X daily chart API（1 HKD = 0.8568 RMB）"
+    ttm_period: ""
+    ttm_method: "NOT_AVAILABLE"
+    ttm_unavailable_reason: "截至2026-08-20，港交所尚未披露2026H1业绩；公司按半年披露，缺少“2025FY+2026H1-2025H1”中的2026H1组成项。"
+
+  data_confidence_level: "S/B"
+
+  validation_checks:
+    - check: "使用的是最新完整年度年报（非中报/季报/预告）"
+      checked: true
+    - check: "年报发布日期不早于去年今日"
+      checked: true
+    - check: "如果年报未发布，已明确标注并使用中报（置信度降级）"
+      checked: true
+    - check: "非预告/快报数据，为正式审计报告"
+      checked: true
+    - check: "已对比至少3年历史数据"
+      checked: true
+    - check: "核心财务数据（现金、负债、利润、现金流）来自年报原文"
+      checked: true
+
+core_financial_data:
+  cash_and_bank_balances:
+    value: 12885900000
+    unit: "RMB"
+    display_unit: "亿元人民币"
+    source: "2025_annual_report_financial_summary_and_notes_20_21"
+    page_number: 5
+    report_period: "2025-12-31"
+    confidence: "S"
+    verification_checked: true
+    notes: "年报披露口径为现金及银行结余128.859亿元，含现金及现金等价物107.099亿元及定期存款本金约21.760亿元；账面应计利息未计入该口径。"
+
+  cash_and_cash_equivalents:
+    value: 10709927000
+    unit: "RMB"
+    source: "2025_annual_report_note_21"
+    page_number: 139
+    report_period: "2025-12-31"
+    confidence: "S"
+    verification_checked: true
+    notes: "含保利财务存款19.69295亿元；不含原始期限24-36个月的定期存款。年报将其定义为活期及原始期限三个月内、用于短期现金承诺的存款。"
+
+  time_deposits_over_three_months:
+    value: 2175889000
+    unit: "RMB"
+    source: "2025_annual_report_note_20"
+    page_number: 139
+    confidence: "S"
+
+  related_financial_institution_deposits:
+    value: 1969295000
+    included_in_cash_and_cash_equivalents: true
+    unit: "RMB"
+    source: "2025_annual_report_note_21"
+    page_number: 139
+    confidence: "S"
+
+  other_low_liquidity_cash:
+    value: 0
+    unit: "RMB"
+    source: "2025_annual_report_notes_20_21"
+    page_number: 139
+    confidence: "S"
+    notes: "除超过三个月定期存款及保利财务存款外，未识别需进一步扣减的低流动性现金。"
+
+  restricted_cash:
+    value: 0
+    source: "2025_annual_report_page_28_no_pledge_of_assets"
+    page_number: 28
+    confidence: "S"
+
+  interest_bearing_debt:
+    short_term:
+      value: 0
+      source: "2025_annual_report_page_28_no_borrowings_or_bank_loans"
+      page_number: 28
+      report_period: "2025-12-31"
+      confidence: "S"
+    long_term:
+      value: 0
+      source: "2025_annual_report_page_28_no_borrowings_or_bank_loans"
+      page_number: 28
+      report_period: "2025-12-31"
+      confidence: "S"
+    bonds:
+      value: 0
+      source: "2025_annual_report_statement_of_financial_position_pages_81_82"
+      page_number: 82
+      report_period: "2025-12-31"
+      confidence: "S"
+    lease_liabilities:
+      value: 101649000
+      source: "2025_annual_report_note_25_and_page_154"
+      page_number: 154
+      report_period: "2025-12-31"
+      confidence: "S"
+    total_calculation: "short_term + long_term + bonds + lease_liabilities"
+    total_value: 101649000
+    confidence: "S"
+
+  total_liabilities:
+    value: 7514980000
+    source: "2025_annual_report_statement_of_financial_position_pages_81_82"
+    page_number: 82
+    confidence: "S"
+
+  revenue:
+    value: 17126068000
+    unit: "RMB"
+    display_unit: "亿元人民币"
+    source: "2025_annual_report_consolidated_income_statement_page_80"
+    page_number: 80
+    report_period: "2025-12-31"
+    confidence: "S"
+
+  net_profit:
+    value: 1567857000
+    unit: "RMB"
+    display_unit: "亿元人民币"
+    source: "2025_annual_report_consolidated_income_statement_page_80"
+    page_number: 80
+    report_period: "2025-12-31"
+    confidence: "S"
+
+  net_profit_attributable:
+    value: 1549450000
+    unit: "RMB"
+    display_unit: "亿元人民币"
+    source: "2025_annual_report_consolidated_income_statement_page_80"
+    page_number: 80
+    report_period: "2025-12-31"
+    confidence: "S"
+
+  ttm_components: []
+
+  non_recurring_items:
+    asset_impairment: 50389000
+    government_subsidy: 15406000
+    gain_on_disposal: -1092000
+    total: 0
+
+  operating_cash_flow:
+    value: 1827154000
+    unit: "RMB"
+    display_unit: "亿元人民币"
+    source: "2025_annual_report_cash_flow_statement_page_84"
+    page_number: 84
+    report_period: "2025-12-31"
+    confidence: "S"
+    verification_checked: true
+
+  capex:
+    value: 48694000
+    unit: "RMB"
+    source: "2025_annual_report_cash_flow_statement_page_84_PPE_44979000_plus_leased_assets_3715000"
+    page_number: 84
+    report_period: "2025-12-31"
+    confidence: "S"
+
+  dividends_paid:
+    value: 737040000
+    unit: "RMB"
+    source: "2025_annual_report_cash_flow_statement_page_84"
+
+  dividend_per_share_for_yield:
+    value: 1.60706
+    currency: "HKD"
+    period: "2025FY"
+    source: "2026-05-29_dividend_announcement"
+    page_number: 1
+    confidence: "S"
+
+  total_shares:
+    value: 553333400
+    source: "2025_annual_report_note_27_page_144"
+    page_number: 144
+    confidence: "S"
+
+  share_price:
+    value: 27.86
+    currency: "HKD"
+    date: "2026-08-20"
+    source: "Yahoo Finance 6049.HK daily chart API（收盘价）"
+
+  market_cap:
+    calculation: "total_shares * share_price * share_price_to_calculation_currency_rate"
+    value: 13208316151.3632
+    unit: "RMB"
+    display_unit: "亿元人民币"
+
+  calculated_metrics:
+    immediate_net_cash:
+      formula: "cash_and_cash_equivalents - lease_liabilities"
+      value: 10608278000
+      display_value: "106.08亿元人民币"
+      market_cap_ratio: 0.8031514296
+      notes: "现金及现金等价物107.09927亿元减租赁负债1.01649亿元；排除原始期限24-36个月的定期存款，更接近随时可动用口径。"
+      confidence: "A"
+
+    conservative_immediate_net_cash:
+      formula: "cash_and_cash_equivalents - poly_finance_deposits - lease_liabilities"
+      value: 8638983000
+      display_value: "86.39亿元人民币"
+      market_cap_ratio: 0.6540563461
+      notes: "在即时净现金基础上进一步剔除保利财务存款19.69295亿元的审慎口径。"
+      confidence: "A"
+
+    net_cash:
+      formula: "cash_and_bank_balances - restricted_cash - interest_bearing_debt.total"
+      value: 12784251000
+      display_value: "127.84亿元人民币"
+      market_cap_ratio: 0.9678940793
+      notes: "广义净现金口径，包含原始期限24-36个月的定期存款本金约21.76亿元，不等于全部随时可动用。"
+      confidence: "A"
+
+    fcf:
+      formula: "operating_cash_flow - capex"
+      value: 1778460000
+      display_value: "17.78亿元人民币"
+      confidence: "A"
+
+    maintenance_fcf:
+      formula: "operating_cash_flow - maintenance_capex_range"
+      low_value: 1732154000
+      high_value: 1782154000
+      estimate_basis: "维护性资本开支估计0.45-0.95亿元；下限参考2025年现金流量表实际资本开支0.487亿元，上限参考2025年PPE折旧0.941亿元。"
+      confidence: "B"
+
+    market_cap_ex_cash:
+      formula: "market_cap - net_cash"
+      value: 424065151.3632
+      display_value: "4.24亿元人民币（仅作辅助，不视全部现金为可分配）"
+
+    fcf_yield:
+      formula: "fcf / market_cap"
+      value: 0.1346469890
+      display_value: "13.46%"
+
+    fcf_multiple_market:
+      formula: "market_cap / fcf"
+      value: 7.4268277900
+      display_value: "7.43倍"
+
+    multi_period_fcf:
+      method: "TWO_YEAR_AVERAGE"
+      periods:
+        - period: "2024FY"
+          value: 1396248000
+          source: "2025_annual_report_comparative_cash_flow_statement_page_84"
+          page_number: 84
+        - period: "2025FY"
+          value: 1778460000
+          source: "2025_annual_report_cash_flow_statement_page_84"
+          page_number: 84
+      average_value: 1587354000
+      market_cap_yield: 0.1201783772
+      unavailable_reason: ""
+      confidence: "A"
+
+    dividend_yield:
+      formula: "dividend_per_share_for_yield / share_price"
+      value: 0.0576834171
+      display_value: "5.77%"
+      notes: "股息是FCF的分配组成，不与FCF收益率相加。"
+
+    fcf_multiple_ex_cash:
+      formula: "market_cap_ex_cash / fcf"
+      value: 0.2384451443
+      display_value: "0.24倍（仅作辅助）"
+
+    pe_ratio:
+      formula: "market_cap / net_profit_attributable"
+      value: 8.5245191206
+      display_value: "8.52倍（2025静态）"
+
+    static_pe:
+      formula: "market_cap / net_profit_attributable"
+      value: 8.5245191206
+      display_value: "8.52倍"
+
+    ttm_net_profit:
+      formula: "sum(ttm_components.operator * ttm_components.value)"
+      value: null
+      display_value: "TTM不可可靠计算"
+
+    ttm_pe:
+      formula: "market_cap / ttm_net_profit"
+      value: null
+      display_value: "TTM不可可靠计算"
+
+    pb_ratio:
+      formula: "market_cap / equity_attributable_to_owners"
+      value: 1.2515727103
+      display_value: "1.25倍"
+
+    debt_to_asset_ratio:
+      formula: "total_liabilities / total_assets"
+      value: 0.4116513134
+      display_value: "41.17%"
+
+    cash_to_market_cap_ratio:
+      formula: "net_cash / market_cap"
+      value: 0.9678940790
+      display_value: "96.79%"
+
+historical_comparison:
+  years:
+    - year: 2023
+      revenue: 15061900000
+      net_profit: 1380100000
+      cash: 11011500000
+      debt: 111703000
+    - year: 2024
+      revenue: 16342312000
+      net_profit: 1473850000
+      cash: 11866700000
+      debt: 105646000
+    - year: 2025
+      revenue: 17126068000
+      net_profit: 1549450000
+      cash: 12885900000
+      debt: 101649000
+
+  variance_analysis:
+    - metric: "revenue"
+      current: 17126068000
+      previous: 16342312000
+      variance_percent: 4.8
+      explanation: "收入同比增长4.8%。"
+    - metric: "net_profit"
+      current: 1549450000
+      previous: 1473850000
+      variance_percent: 5.1
+      explanation: "归母净利润同比增长5.1%。"
+    - metric: "operating_cash_flow"
+      current: 1827154000
+      previous: 2302756000
+      variance_percent: -20.7
+      explanation: "经营现金流同比下降20.7%（减少4.75602亿元）。营运资金变动前经营现金流同比增加0.70587亿元；主要同比拖累为贸易应付增加额下降（-3.83850亿元）和贸易应收增加额扩大（-1.69839亿元），另所得税支付增加拖累0.53421亿元。下降以2024年应付增长带来的现金流助益未重现为主，应收占用为实质风险。"
+
+capital_market_nutrient_test:
+  full_test_required: false
+  test_period: "2023-01-01/2025-12-31"
+  classification: "公司养股东"
+  classification_basis: "2023-2025年度已付/已批准普通股股息合计约20.64亿元人民币；2025年末总股本仍为5.533334亿股，国内股转H股不增加总股本；2025年报告口径FCF为17.78亿元并覆盖2025年度已批准股息7.75亿元。公司并非持续融资型，但关联方存款与母公司项目依赖需持续约束。"
+  summary_source: "保利物业2025年报第83-84、128、139、144页及2024年报第5页"
+
+  cumulative_equity_financing:
+    value: 0
+    unit: "RMB"
+    source: "简版测试未统计完整五年；2023-2025未见新增股本融资，2025年报第144页"
+    confidence: "A"
+
+  cumulative_dividends_and_net_buybacks:
+    value: 2064487000
+    unit: "RMB"
+    source: "2025年报第83-84及128页、2026-05-29股息公告；口径为2023-2025年度已付/已批准股息，数值单位元"
+    confidence: "S"
+
+  diluted_share_count_cagr:
+    value: 0
+    source: "2025年报第144页"
+    confidence: "S"
+
+  cumulative_operating_cash_flow:
+    value: 0
+    unit: "RMB"
+    source: "简版测试不适用完整五年汇总"
+    confidence: "A"
+
+  cumulative_capex:
+    value: 0
+    unit: "RMB"
+    source: "简版测试不适用完整五年汇总"
+    confidence: "A"
+
+  incremental_roic:
+    value: 0
+    calculation: "简版测试不计算"
+    source: "简版测试不适用"
+    confidence: "A"
+
+  fundraising_project_delivery_rate:
+    value: 0
+    source: "简版测试不适用"
+    confidence: "A"
+
+  unlock_and_reduction_pressure:
+    next_date: ""
+    shares: 0
+    percent_of_total_shares: 0
+    source: "2025年报第144页，限制性股票由受托人在二级市场购买，不新增总股本"
+    confidence: "S"
+
+  historical_price_anchor_excluded: true
+
+cross_validation:
+  interest_rate_check:
+    interest_income: 73610000
+    calculated_rate: 0.0057124454
+    expected_range: "1%-5%"
+    status: "WARNING"
+    notes: "银行及其他利息收入/期末现金口径约0.57%；期末现金不是平均余额，且定期存款利率处于低位，仅作方向性复核。"
+
+  interest_expense_check:
+    interest_expense: 3900000
+    calculated_rate: 0.0383673228
+    expected_range: "2%-10%"
+    status: "PASS"
+    notes: "利息支出均为租赁负债利息。"
+
+  fcf_vs_profit_check:
+    fcf: 1778460000
+    net_profit: 1549450000
+    ratio: 1.1478008326
+    expected_range: ">50%"
+    status: "PASS"
+    notes: "报告口径FCF/归母净利润约114.8%。"
+
+validation_checklist:
+  - id: "timing"
+    item: "时点检查：使用的是最新完整年度年报（非中报/季报）"
+    checked: true
+  - id: "unit"
+    item: "单位检查：确认所有数字单位（亿/万/千元）正确无误"
+    checked: true
+  - id: "subject"
+    item: "科目检查：现金≠受限存款，借款≠总负债，区分有息/无息负债"
+    checked: true
+  - id: "calculation"
+    item: "计算检查：手工复核净现金、FCF等计算正确"
+    checked: true
+  - id: "variance"
+    item: "对比检查：与上期数据对比，变动>30%有合理解释"
+    checked: true
+    variance_explanation: "核心年度指标变动均未超过30%；已按年报附注34桥接经营现金流下降20.7%，区分应付增长正常化与应收占用，并对贸易应收增长22.3%单独分析。"
+  - id: "source"
+    item: "来源检查：所有数据标注年报页码/附注编号"
+    checked: true
+  - id: "cross_check"
+    item: "交叉验证：利息率、现金/市值比例在合理范围"
+    checked: true
+  - id: "data_freshness"
+    item: "数据时效性：确认使用最新完整年度年报，非中报/季报数据"
+    checked: true
+    freshness_explanation: "2026H1截至报告日尚未披露，因此只补充披露状态，不伪造TTM。"
+  - id: "shareholder_relationship"
+    item: "股东关系：已完成资本市场养分测试并给出标签"
+    checked: true
+  - id: "historical_price_anchor"
+    item: "价格锚检查：历史高点、发行价、融资价和距高点跌幅未参与内在价值计算"
+    checked: true
+
+data_corrections:
+  has_correction: true
+  corrections:
+    - field: "2025资本开支"
+      original_value: "旧报告估算2-3亿元人民币"
+      corrected_value: "现金流量表原始值0.48694亿元人民币"
+      reason: "按年报现金流量表将购置PPE与新增租赁资产及投资物业相加，不再用粗略估算。"
+      date: "2026-08-20"
+
+confidence_downgrade_reasons:
+  - reason: "核心年度财务数据为S级；股价与汇率为外部市场数据，估值整体按B级行情置信度展示。"
+  - reason: "2026H1未披露，TTM PE明确留空；维护性资本开支为B级估计区间。"
+
+confirmation:
+  i_confirm:
+    - "所有S级数据直接来自公司年报原文附注"
+    - "已逐项核查现金、负债、利润、现金流数据"
+    - "计算过程已复核，单位确认无误"
+    - "与上期数据对比合理，异常变动已解释"
+    - "了解数据错误将导致分析报告作废"
+  analyst_signature: "Codex"
+  validation_date: "2026-08-20"
