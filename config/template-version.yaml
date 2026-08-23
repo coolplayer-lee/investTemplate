@@ -18,6 +18,7 @@ policy:
   historical_price_anchor_source: "template/06-估值与安全边际.md"
   watchlist_card_source: "template/07-决策流程与持仓管理.md"
   top_tier_rule_source: "template/07-决策流程与持仓管理.md#70a-顶格标的判定与配置v5524-r3新增"
+  top_tier_flow_guide: "analysis-template.md#05-顶格标的判定v5524-r3新增"
   a_share_diff_valuation_source: "template/06-估值与安全边际.md#60a-a股港股差异化估值标准v5511新增v5524-r3确认当前有效"
 
 rules:
