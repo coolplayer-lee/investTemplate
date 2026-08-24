@@ -2,16 +2,16 @@
   "meta": {
     "template_version": "V5.5.12",
     "engine_version": "V3.1",
-    "generated_at": "2026-08-21 09:06:03",
-    "latest_trade_date": "2026-08-21"
+    "generated_at": "2026-08-24 09:11:40",
+    "latest_trade_date": "2026-08-24"
   },
   "portfolio": {
     "initial_capital": 500000.0,
     "cash": 101897.0,
-    "market_value": 330280.01,
-    "net_value": 432177.01,
-    "total_return_pct": -13.5646,
-    "position_ratio_pct": 66.056,
+    "market_value": 325840.0,
+    "net_value": 427737.0,
+    "total_return_pct": -14.4526,
+    "position_ratio_pct": 65.168,
     "positions": [
       {
         "name": "天津发展",
@@ -19,12 +19,12 @@
         "ticker": "0882.HK",
         "shares": 40000,
         "avg_cost": 2.55,
-        "close": 2.095,
-        "change_pct": 0.2392,
-        "market_value": 83800.0,
-        "unrealized": -18200.0,
+        "close": 2.075,
+        "change_pct": -0.9547,
+        "market_value": 83000.0,
+        "unrealized": -19000.0,
         "sell_trigger": 4.5,
-        "weight_pct": 19.3902,
+        "weight_pct": 19.4044,
         "status": "实时"
       },
       {
@@ -33,12 +33,12 @@
         "ticker": "1522.HK",
         "shares": 355000,
         "avg_cost": 0.29198,
-        "close": 0.224,
-        "change_pct": 4.186,
-        "market_value": 79520.0,
-        "unrealized": -24132.9,
+        "close": 0.222,
+        "change_pct": -0.8929,
+        "market_value": 78810.0,
+        "unrealized": -24842.9,
         "sell_trigger": 0.6,
-        "weight_pct": 18.3999,
+        "weight_pct": 18.4249,
         "status": "实时"
       },
       {
@@ -47,12 +47,12 @@
         "ticker": "3320.HK",
         "shares": 16000,
         "avg_cost": 5.278125,
-        "close": 4.81,
-        "change_pct": -1.5353,
-        "market_value": 76960.0,
-        "unrealized": -7490.0,
+        "close": 4.705,
+        "change_pct": -2.183,
+        "market_value": 75280.0,
+        "unrealized": -9170.0,
         "sell_trigger": 9.0,
-        "weight_pct": 17.8075,
+        "weight_pct": 17.5996,
         "status": "实时"
       },
       {
@@ -61,12 +61,12 @@
         "ticker": "87001.HK",
         "shares": 250000,
         "avg_cost": 0.432,
-        "close": 0.36,
-        "change_pct": 0.0,
-        "market_value": 90000.0,
-        "unrealized": -18000.0,
+        "close": 0.355,
+        "change_pct": -1.3889,
+        "market_value": 88750.0,
+        "unrealized": -19250.0,
         "sell_trigger": 1.0,
-        "weight_pct": 20.8248,
+        "weight_pct": 20.7487,
         "status": "实时"
       }
     ]
