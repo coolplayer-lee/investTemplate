@@ -15,7 +15,7 @@
     "capital_mode": "dca",
     "currency": "CNY",
     "cash": 91603.51,
-    "last_update": "2026-08-25"
+    "last_update": "2026-08-26"
   },
   "position": {
     "shares": 7273,
@@ -27,9 +27,9 @@
     "return_pct": 9.72
   },
   "daily_performance": {
-    "date": "2026-08-25",
-    "vix": 15.79,
-    "daily_pnl": 175.27,
+    "date": "2026-08-26",
+    "vix": 15.68,
+    "daily_pnl": 0.0,
     "total_pnl": 1587.91,
     "total_return_pct": 9.65
   },
