@@ -2,7 +2,7 @@ template:
   id: "V5.5.24"
   name: "股东回报、FCF收益率与现金可用性版"
   updated: "2026-08-20"
-  revision: "2026-08-23-r3"
+  revision: "2026-08-25-r4"
   data_schema_version: "V5.5.24.2"
   entrypoint: "analysis-template.md"
   chapter_dir: "template/"
