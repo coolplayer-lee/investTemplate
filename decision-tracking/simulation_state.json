@@ -2,8 +2,8 @@
   "template_version": "V5.5.22",
   "engine_version": "V3.1",
   "initial_capital": 500000.0,
-  "cash": 101897.0,
-  "last_trade_date": "2026-09-01",
+  "cash": 97487.0,
+  "last_trade_date": "2026-09-02",
   "positions": {
     "1522.HK": {
       "name": "京投交通科技",
@@ -43,8 +43,8 @@
       "name": "华润医药",
       "code": "03320",
       "ticker": "3320.HK",
-      "shares": 16000,
-      "avg_cost": 5.278125,
+      "shares": 17000,
+      "avg_cost": 5.227059,
       "sell_trigger": 9.0,
       "lot_size": 1000,
       "position_type": "卫星",

@@ -2,16 +2,16 @@
   "meta": {
     "template_version": "V5.5.12",
     "engine_version": "V3.1",
-    "generated_at": "2026-09-01 13:35:39",
-    "latest_trade_date": "2026-09-01"
+    "generated_at": "2026-09-02 12:52:03",
+    "latest_trade_date": "2026-09-02"
   },
   "portfolio": {
     "initial_capital": 500000.0,
-    "cash": 101897.0,
-    "market_value": 317465.0,
-    "net_value": 419362.0,
-    "total_return_pct": -16.1276,
-    "position_ratio_pct": 63.493,
+    "cash": 97487.0,
+    "market_value": 321759.99,
+    "net_value": 419246.99,
+    "total_return_pct": -16.1506,
+    "position_ratio_pct": 64.352,
     "positions": [
       {
         "name": "天津发展",
@@ -19,12 +19,12 @@
         "ticker": "0882.HK",
         "shares": 40000,
         "avg_cost": 2.55,
-        "close": 2.09,
-        "change_pct": 1.2106,
-        "market_value": 83600.0,
-        "unrealized": -18400.0,
+        "close": 2.11,
+        "change_pct": 0.9569,
+        "market_value": 84400.0,
+        "unrealized": -17600.0,
         "sell_trigger": 4.5,
-        "weight_pct": 19.935,
+        "weight_pct": 20.1313,
         "status": "实时"
       },
       {
@@ -33,26 +33,26 @@
         "ticker": "1522.HK",
         "shares": 355000,
         "avg_cost": 0.29198,
-        "close": 0.219,
-        "change_pct": -0.4545,
-        "market_value": 77745.0,
-        "unrealized": -25907.9,
+        "close": 0.218,
+        "change_pct": -0.4566,
+        "market_value": 77390.0,
+        "unrealized": -26262.9,
         "sell_trigger": 0.6,
-        "weight_pct": 18.5389,
+        "weight_pct": 18.4593,
         "status": "实时"
       },
       {
         "name": "华润医药",
         "code": "03320",
         "ticker": "3320.HK",
-        "shares": 16000,
-        "avg_cost": 5.278125,
-        "close": 4.445,
-        "change_pct": -0.5593,
-        "market_value": 71120.0,
-        "unrealized": -13330.0,
+        "shares": 17000,
+        "avg_cost": 5.227059,
+        "close": 4.41,
+        "change_pct": -0.7874,
+        "market_value": 74970.0,
+        "unrealized": -13890.01,
         "sell_trigger": 9.0,
-        "weight_pct": 16.9591,
+        "weight_pct": 17.8821,
         "status": "实时"
       },
       {
@@ -66,7 +66,7 @@
         "market_value": 85000.0,
         "unrealized": -23000.0,
         "sell_trigger": 1.0,
-        "weight_pct": 20.2689,
+        "weight_pct": 20.2744,
         "status": "实时"
       }
     ]
@@ -142,9 +142,30 @@
       "shares": 3000,
       "amount": 633.0,
       "reason": "加仓：当前价 0.211 低于成本价 0.293 的95%（0.278），触发回撤加仓策略"
+    },
+    {
+      "date": "2026-09-02",
+      "ticker": "3320.HK",
+      "name": "华润医药",
+      "action": "BUY_ADD",
+      "price": 4.41,
+      "shares": 1000,
+      "amount": 4410.0,
+      "reason": "加仓：当前价 4.410 低于成本价 5.278 的95%（5.014），触发回撤加仓策略"
     }
   ],
   "grouped_trades": {
+    "2026-09-02": [
+      {
+        "ticker": "3320.HK",
+        "name": "华润医药",
+        "action": "BUY_ADD",
+        "price": 4.41,
+        "shares": 1000,
+        "amount": 4410.0,
+        "reason": "加仓：当前价 4.410 低于成本价 5.278 的95%（5.014），触发回撤加仓策略"
+      }
+    ],
     "2026-08-19": [
       {
         "ticker": "1522.HK",
