@@ -166,6 +166,7 @@ def check_daily_returns():
         daily_pnl = float(row['daily_pnl'])
         return_pct = float(row['return_pct'])
         total_return_pct = float(row['total_return_pct'])
+        cash = float(row['cash'])
         net_value = float(row['net_value'])
 
         # 校验 unrealized = mv - total_cost
@@ -179,14 +180,15 @@ def check_daily_returns():
             if abs(return_pct - expected_return_pct) > 0.1:
                 error(f"{date} return_pct 计算错误: 记录={return_pct}, 预期={expected_return_pct}")
 
-        # 校验 net_value = market_value（当前口径）
-        if abs(net_value - mv) > 0.1:
-            error(f"{date} net_value 应等于 market_value: net_value={net_value}, mv={mv}")
+        # 校验净值包含每期计划金额未买满整份ETF留下的尾款
+        expected_net_value = round(mv + cash, 2)
+        if abs(net_value - expected_net_value) > 0.1:
+            error(f"{date} net_value 计算错误: 记录={net_value}, 预期={expected_net_value}")
 
         # 校验 total_return_pct 口径一致性：应基于 cumulative_buy
         cb = cum_history.get(date, 0)
         if cb > 0:
-            expected_total = round((mv - cb) / cb * 100, 2)
+            expected_total = round((net_value - cb) / cb * 100, 2)
             if abs(total_return_pct - expected_total) > 0.15:
                 error(f"{date} total_return_pct 口径异常: 记录={total_return_pct}, "
                       f"预期(基于累计投入{cb})={expected_total}。可能使用了错误的 principal!")

@@ -2,126 +2,121 @@
   "strategy": {
     "name": "VIX定投策略_纳指100",
     "version": "V2.1",
-    "rules_effective_date": "2026-09-08",
-    "start_date": "2026-03-24",
-    "note": "价格已按实际市价修正（1.9-2.0元区间）",
+    "rules_effective_date": "2026-03-31",
+    "start_date": "2026-03-31",
+    "note": "历史已按V2.1规则和2026-09-01双周锚点重算",
     "etf_code": "513110",
     "etf_name": "纳斯达克100 ETF",
     "execution_frequency": "每两周周二执行一次（只买不卖）",
-    "execution_anchor_date": "2026-03-24",
-    "update_frequency": "每日更新收益"
+    "execution_anchor_date": "2026-09-01",
+    "update_frequency": "仅保留双周定投日快照"
   },
   "account": {
     "initial_capital": 100000,
     "capital_mode": "dca",
     "currency": "CNY",
-    "cash": 91603.51,
-    "last_update": "2026-09-03"
+    "cash": 14.23,
+    "last_update": "2026-09-01"
   },
   "position": {
-    "shares": 7273,
-    "avg_cost": 2.246670012374536,
-    "total_cost": 16340.031,
-    "current_price": 2.447,
-    "market_value": 17797.031,
-    "unrealized_pnl": 1456.9999999999982,
+    "shares": 28023,
+    "avg_cost": 2.283330835385219,
+    "total_cost": 63985.78,
+    "current_price": 2.487,
+    "market_value": 69693.2,
+    "unrealized_pnl": 5707.43,
     "return_pct": 8.92
   },
   "daily_performance": {
-    "date": "2026-09-03",
-    "vix": 15.42,
-    "daily_pnl": 36.36,
-    "total_pnl": 1457.0,
-    "total_return_pct": 8.85
+    "date": "2026-09-01",
+    "vix": 14.92,
+    "daily_pnl": -607.95,
+    "total_pnl": 5707.43,
+    "total_return_pct": 8.92
   },
   "statistics": {
-    "cumulative_buy": 16350.0,
+    "cumulative_buy": 64000,
     "cumulative_sell": 0,
-    "trade_count": 11,
-    "buy_count": 11,
+    "trade_count": 12,
+    "buy_count": 12,
     "sell_count": 0,
-    "total_invested": 16350.0,
-    "hold_days": 14,
-    "last_trade_date": "2026-08-25",
-    "next_trade_date": "2026-09-08"
+    "total_invested": 64000,
+    "hold_days": 155,
+    "last_trade_date": "2026-09-01",
+    "next_trade_date": "2026-09-15"
   },
   "schedule": {
     "frequency": "每双周周二",
-    "anchor_date": "2026-03-24",
+    "anchor_date": "2026-09-01",
     "upcoming_trade_dates": [
-      "2026-09-08",
-      "2026-09-22",
-      "2026-10-06",
-      "2026-10-20",
-      "2026-11-03"
+      "2026-09-15",
+      "2026-09-29",
+      "2026-10-13",
+      "2026-10-27",
+      "2026-11-10"
     ],
-    "next_trade_date": "2026-09-08"
+    "next_trade_date": "2026-09-15"
   },
   "history": {
-    "vix_high": 21.23,
-    "vix_high_date": "2026-04-13",
-    "vix_low": 14.43,
-    "vix_low_date": "2026-08-29",
-    "max_unrealized_pnl": 2185.714,
-    "max_unrealized_date": "2026-06-02"
+    "vix_high": 30.61,
+    "vix_high_date": "2026-03-31",
+    "vix_low": 14.92,
+    "vix_low_date": "2026-09-01",
+    "max_unrealized_pnl": 6315.37,
+    "max_unrealized_date": "2026-08-18"
   },
   "strategy_state": {
     "vix_based_selling_enabled": false,
     "single_period_buy_cap": 10000,
     "biweekly_vix_log": [
       {
-        "date": "2026-03-24",
-        "vix": 21.0
+        "date": "2026-03-31",
+        "vix": 30.61
       },
       {
-        "date": "2026-04-07",
-        "vix": 19.5
+        "date": "2026-04-14",
+        "vix": 19.12
       },
       {
-        "date": "2026-04-21",
-        "vix": 19.5
+        "date": "2026-04-28",
+        "vix": 18.02
       },
       {
-        "date": "2026-05-19",
-        "vix": 18.15
+        "date": "2026-05-12",
+        "vix": 18.38
       },
       {
-        "date": "2026-06-02",
-        "vix": 16.12
+        "date": "2026-05-26",
+        "vix": 16.59
       },
       {
-        "date": "2026-06-16",
-        "vix": 16.14
+        "date": "2026-06-09",
+        "vix": 18.92
       },
       {
-        "date": "2026-06-30",
-        "vix": 17.56
+        "date": "2026-06-23",
+        "vix": 17.28
       },
       {
-        "date": "2026-07-14",
-        "vix": 16.5
+        "date": "2026-07-07",
+        "vix": 15.57
       },
       {
-        "date": "2026-07-28",
-        "vix": 18.86
+        "date": "2026-07-21",
+        "vix": 18.65
       },
       {
-        "date": "2026-08-11",
-        "vix": 15.48
+        "date": "2026-08-04",
+        "vix": 15.86
       },
       {
-        "date": "2026-08-25",
-        "vix": 15.79
+        "date": "2026-08-18",
+        "vix": 15.19
+      },
+      {
+        "date": "2026-09-01",
+        "vix": 14.92
       }
-    ],
-    "cumulative_sell_ratio": 0.0,
-    "reduction_pool": {
-      "total_cash": 0.0,
-      "remaining_cash": 0.0
-    },
-    "reflow_status": "none",
-    "extreme_risk": {
-      "active": false
-    }
+    ]
   }
 }

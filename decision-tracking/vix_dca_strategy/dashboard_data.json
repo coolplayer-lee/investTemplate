@@ -1,188 +1,198 @@
 {
   "strategy": "VIX定投策略_纳指100",
   "version": "V2.1",
-  "last_update": "2026-09-03",
+  "last_update": "2026-09-01",
   "account": {
-    "initial_capital": 16350.0,
-    "cash": 91603.51,
-    "total_assets": 17797.03
+    "initial_capital": 64000,
+    "cash": 14.23,
+    "total_assets": 69707.43
   },
   "position": {
     "etf_code": "513110",
     "etf_name": "纳斯达克100 ETF",
-    "shares": 7273,
-    "avg_cost": 2.247,
-    "current_price": 2.447,
-    "market_value": 17797.03,
-    "total_cost": 16340.03,
-    "unrealized_pnl": 1457.0,
+    "shares": 28023,
+    "avg_cost": 2.283,
+    "current_price": 2.487,
+    "market_value": 69693.2,
+    "total_cost": 63985.78,
+    "unrealized_pnl": 5707.43,
     "return_pct": 8.92
   },
   "performance": {
-    "total_pnl": 1457.0,
-    "total_return_pct": 8.85,
-    "daily_pnl": 36.36,
-    "vix": 15.42,
-    "date": "2026-09-03"
+    "total_pnl": 5707.43,
+    "total_return_pct": 8.92,
+    "daily_pnl": -607.95,
+    "vix": 14.92,
+    "date": "2026-09-01"
   },
   "schedule": {
     "frequency": "每双周周二",
-    "last_trade_date": "2026-08-25",
-    "next_trade_date": "2026-09-08",
-    "days_until_next": 5
+    "last_trade_date": "2026-09-01",
+    "next_trade_date": "2026-09-15",
+    "days_until_next": 14
   },
   "recent_trades": [
     {
-      "date": "2026-08-25",
-      "vix": 15.95,
+      "date": "2026-09-01",
+      "vix": 14.92,
       "action": "BUY",
-      "amount": 1300,
-      "shares": 527,
-      "price": 2.465,
-      "label": "小额定投(趋势修正×1.3)"
+      "amount": 4000,
+      "shares": 1608,
+      "price": 2.487,
+      "label": "低波动基础定投"
     },
     {
-      "date": "2026-08-11",
-      "vix": 15.47,
+      "date": "2026-08-18",
+      "vix": 15.19,
       "action": "BUY",
-      "amount": 1300,
-      "shares": 523,
-      "price": 2.484,
-      "label": "小额定投(趋势修正×1.3)"
+      "amount": 5000,
+      "shares": 1991,
+      "price": 2.51,
+      "label": "正常定投"
     },
     {
-      "date": "2026-07-28",
-      "vix": 17.6,
+      "date": "2026-08-04",
+      "vix": 15.86,
       "action": "BUY",
-      "amount": 1050,
-      "shares": 454,
-      "price": 2.309,
-      "label": "偏低定投(趋势修正×0.7)"
+      "amount": 5000,
+      "shares": 2045,
+      "price": 2.444,
+      "label": "正常定投"
     },
     {
-      "date": "2026-07-14",
-      "vix": 17.16,
+      "date": "2026-07-21",
+      "vix": 18.65,
       "action": "BUY",
-      "amount": 1000,
-      "shares": 410,
-      "price": 2.436,
-      "label": "小额定投(趋势修正×1.0)"
+      "amount": 5000,
+      "shares": 2086,
+      "price": 2.396,
+      "label": "正常定投"
     },
     {
-      "date": "2026-06-30",
-      "vix": 18.33,
+      "date": "2026-07-07",
+      "vix": 15.57,
       "action": "BUY",
-      "amount": 700,
-      "shares": 282,
-      "price": 2.481,
-      "label": "小额定投(趋势修正×0.7)"
+      "amount": 5000,
+      "shares": 2050,
+      "price": 2.438,
+      "label": "正常定投"
     },
     {
-      "date": "2026-06-16",
-      "vix": 16.3,
+      "date": "2026-06-23",
+      "vix": 17.28,
       "action": "BUY",
-      "amount": 1300,
-      "shares": 511,
-      "price": 2.543,
-      "label": "小额定投(趋势修正×1.3)"
+      "amount": 5000,
+      "shares": 2037,
+      "price": 2.454,
+      "label": "正常定投"
     },
     {
-      "date": "2026-06-02",
-      "vix": 15.82,
+      "date": "2026-06-09",
+      "vix": 18.92,
       "action": "BUY",
-      "amount": 1300,
-      "shares": 499,
-      "price": 2.602,
-      "label": "小额定投(趋势修正×1.3)"
+      "amount": 5000,
+      "shares": 2035,
+      "price": 2.456,
+      "label": "正常定投"
     },
     {
-      "date": "2026-05-19",
-      "vix": 18.15,
+      "date": "2026-05-26",
+      "vix": 16.59,
       "action": "BUY",
-      "amount": 1950,
-      "shares": 845,
-      "price": 2.306,
-      "label": "偏低定投(趋势修正×1.3)"
+      "amount": 5000,
+      "shares": 2047,
+      "price": 2.442,
+      "label": "正常定投"
     },
     {
-      "date": "2026-04-21",
-      "vix": 19.5,
+      "date": "2026-05-12",
+      "vix": 18.38,
       "action": "BUY",
-      "amount": 1950,
-      "shares": 914,
-      "price": 2.133,
-      "label": "偏低定投(趋势修正×1.3)"
+      "amount": 5000,
+      "shares": 2129,
+      "price": 2.348,
+      "label": "正常定投"
     },
     {
-      "date": "2026-04-07",
-      "vix": 19.5,
+      "date": "2026-04-28",
+      "vix": 18.02,
       "action": "BUY",
-      "amount": 1500,
-      "shares": 768,
-      "price": 1.952,
-      "label": "偏低定投(历史不足,不修正)"
+      "amount": 5000,
+      "shares": 2275,
+      "price": 2.197,
+      "label": "正常定投"
     }
   ],
   "daily_snapshots": [
     {
-      "date": "2026-09-03",
-      "price": 2.447,
-      "pnl": 1457.0,
-      "daily_pnl": 36.36
-    },
-    {
-      "date": "2026-09-02",
-      "price": 2.442,
-      "pnl": 1420.64,
-      "daily_pnl": -327.28
-    },
-    {
       "date": "2026-09-01",
       "price": 2.487,
-      "pnl": 1747.92,
-      "daily_pnl": 14.55
+      "pnl": 5707.43,
+      "daily_pnl": -607.95,
+      "total_return_pct": 8.92
     },
     {
-      "date": "2026-08-31",
-      "price": 2.485,
-      "pnl": 1733.37,
-      "daily_pnl": -58.18
+      "date": "2026-08-18",
+      "price": 2.51,
+      "pnl": 6315.37,
+      "daily_pnl": 1611.48,
+      "total_return_pct": 10.53
     },
     {
-      "date": "2026-08-29",
-      "price": 2.493,
-      "pnl": 1791.56,
-      "daily_pnl": -14.55
+      "date": "2026-08-04",
+      "price": 2.444,
+      "pnl": 4703.89,
+      "daily_pnl": 1073.69,
+      "total_return_pct": 8.55
     },
     {
-      "date": "2026-08-28",
-      "price": 2.495,
-      "pnl": 1806.1,
-      "daily_pnl": 218.19
+      "date": "2026-07-21",
+      "price": 2.396,
+      "pnl": 3630.2,
+      "daily_pnl": -852.81,
+      "total_return_pct": 7.26
     },
     {
-      "date": "2026-08-26",
-      "price": 2.465,
-      "pnl": 1587.91,
-      "daily_pnl": 0.0
+      "date": "2026-07-07",
+      "price": 2.438,
+      "pnl": 4483.0,
+      "daily_pnl": -292.39,
+      "total_return_pct": 9.96
     },
     {
-      "date": "2026-08-25",
-      "price": 2.465,
-      "pnl": 1587.91,
-      "daily_pnl": 175.27
+      "date": "2026-06-23",
+      "price": 2.454,
+      "pnl": 4775.39,
+      "daily_pnl": -32.91,
+      "total_return_pct": 11.94
     },
     {
-      "date": "2026-08-24",
-      "price": 2.439,
-      "pnl": 1412.65,
-      "daily_pnl": -175.4
+      "date": "2026-06-09",
+      "price": 2.456,
+      "pnl": 4808.3,
+      "daily_pnl": 197.89,
+      "total_return_pct": 13.74
     },
     {
-      "date": "2026-08-21",
-      "price": 2.465,
-      "pnl": 1588.04,
-      "daily_pnl": -80.95
+      "date": "2026-05-26",
+      "price": 2.442,
+      "pnl": 4610.41,
+      "daily_pnl": 1139.16,
+      "total_return_pct": 15.37
+    },
+    {
+      "date": "2026-05-12",
+      "price": 2.348,
+      "pnl": 3471.25,
+      "daily_pnl": 1508.75,
+      "total_return_pct": 13.89
+    },
+    {
+      "date": "2026-04-28",
+      "price": 2.197,
+      "pnl": 1962.51,
+      "daily_pnl": 1026.26,
+      "total_return_pct": 9.81
     }
   ],
   "strategy_version": "V2.1",

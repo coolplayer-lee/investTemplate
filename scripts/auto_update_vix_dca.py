@@ -7,9 +7,9 @@ VIX定投策略自动更新脚本 V2.1
   - 单期买入金额最高10000元
   - 不使用趋势修正，不依据VIX主动卖出
 
-自动获取VIX和ETF价格，每日更新收益。
+自动获取VIX和ETF价格，仅在双周定投日更新交易与收益历史。
 买入：每双周周二（根据VIX值决定买入金额）
-收益：每日更新（A股收盘后自动执行）
+收益：仅定投日更新（A股收盘后自动执行）
 """
 
 import json
@@ -341,6 +341,7 @@ def load_json(filepath):
 def save_json(filepath, data):
     with open(filepath, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
+        f.write('\n')
 
 
 # ==================== 日期与定投日历 ====================
@@ -441,10 +442,8 @@ def get_total_assets_value(state, price=None):
     market_value = float(pos.get('market_value', 0) or 0)
     if price is not None:
         market_value = float(pos.get('shares', 0) or 0) * float(price)
-    if has_initial_capital_mode(state):
-        cash = float(state.get('account', {}).get('cash', 0) or 0)
-        return market_value + cash
-    return market_value
+    cash = float(state.get('account', {}).get('cash', 0) or 0)
+    return market_value + cash
 
 
 def get_position_value(state, price=None):
@@ -457,15 +456,11 @@ def get_position_value(state, price=None):
 # ==================== 策略核心逻辑 ====================
 
 def get_vix_zone(vix):
-    if vix >= 35: return ">=35"
-    elif vix >= 30: return "30-35"
+    if vix >= 30: return ">=30"
     elif vix >= 25: return "25-30"
     elif vix >= 20: return "20-25"
-    elif vix >= 18: return "18-20"
-    elif vix >= 15: return "15-18"
-    elif vix >= 12: return "12-15"
-    elif vix >= 10: return "10-12"
-    else: return "<10"
+    elif vix >= 15: return "15-20"
+    else: return "<15"
 
 
 def get_base_buy_amount(vix, config):
@@ -688,13 +683,15 @@ def execute_buy(state, amount, price, label, date_str):
     if shares <= 0:
         return None
     total_cost = shares * price + fee
-    cash_after = cash_before - total_cost if use_cash_account else cash_before
+    if use_cash_account:
+        cash_after = cash_before - total_cost
+    else:
+        cash_after = cash_before + amount - total_cost
 
     pos['shares'] += shares
     pos['total_cost'] += total_cost
     pos['avg_cost'] = pos['total_cost'] / pos['shares']
-    if use_cash_account:
-        acc['cash'] = cash_after
+    acc['cash'] = cash_after
 
     state['statistics']['cumulative_buy'] = float(state['statistics'].get('cumulative_buy', 0) or 0) + amount
     state['statistics']['buy_count'] = int(state['statistics'].get('buy_count', 0) or 0) + 1
@@ -709,6 +706,10 @@ def execute_buy(state, amount, price, label, date_str):
         'amount': amount,
         'shares': shares,
         'price': price,
+        'fee': fee,
+        'total_cost': total_cost,
+        'cash_before': cash_before,
+        'cash_after': cash_after,
         'label': label
     }
 
@@ -927,7 +928,8 @@ def update_dashboard_data(dashboard, state, date_str, vix, price, trade_infos):
         'date': date_str,
         'price': price,
         'pnl': perf['total_pnl'],
-        'daily_pnl': perf['daily_pnl']
+        'daily_pnl': perf['daily_pnl'],
+        'total_return_pct': perf['total_return_pct']
     })
     dashboard['daily_snapshots'] = snaps[:10]
     return dashboard
@@ -955,13 +957,16 @@ def update_markdown_template(state, date_str, vix, price):
     if not upcoming_trades and next_trade:
         upcoming_trades = [next_trade]
     anchor_date = schedule.get('anchor_date', '未设置')
+    strategy_meta = state.get('strategy', {})
+    start_date = strategy_meta.get('start_date', '未设置')
+    effective_date = strategy_meta.get('rules_effective_date', start_date)
 
     content = f"""# VIX定投策略 - 纳指100 ETF（**{ETF_CODE}**）
 
-> **标的代码：{ETF_CODE}** | 策略版本：**V2.1（简化定投版）** | 启动日期：2026-03-24
-> **买入执行：每双周周二** | **收益更新：每日** | 投入本金：{principal:,.2f}元
+> **标的代码：{ETF_CODE}** | 策略版本：**V2.1（简化定投版）** | 启动日期：{start_date}
+> **买入执行：每双周周二** | **收益记录：仅定投日** | 投入本金：{principal:,.2f}元
 > **双周锚点：{anchor_date}（每双周周二定投）**
-> **V2.1生效日期：2026-09-08；历史交易不追溯调整**
+> **V2.1生效日期：{effective_date}；历史已按当前规则与锚点重算**
 
 ---
 
@@ -969,7 +974,7 @@ def update_markdown_template(state, date_str, vix, price):
 
 <iframe src="/vix_strategy/today_signal.html" title="VIX今日操作提示" width="100%" height="285" style="border:0;overflow:hidden" loading="eager"></iframe>
 
-> 每个工作日北京时间08:30自动更新，08:45失败补跑；使用上一交易日VIX收盘值。下午任务继续更新ETF价格和组合收益。
+> 每个工作日北京时间08:30自动更新操作提示；交易与收益历史只在双周定投日下午更新。
 
 ## 当前收益（{date_str}）
 
@@ -997,7 +1002,9 @@ def update_markdown_template(state, date_str, vix, price):
         snap_price = snap['price']
         snap_pnl = snap['pnl']
         snap_daily = snap['daily_pnl']
-        snap_return = (snap_pnl / principal * 100) if principal > 0 else 0
+        snap_return = snap.get('total_return_pct')
+        if snap_return is None:
+            snap_return = (snap_pnl / principal * 100) if principal > 0 else 0
         marker = "**" if snap_date == date_str else ""
         content += f"| {marker}{snap_date}{marker} | {marker}{snap_price:.2f}{marker} | {marker}{snap_daily:+.2f}{marker} | {marker}{snap_pnl:+.2f}{marker} | {marker}{snap_return:+.2f}%{marker} |\n"
 
@@ -1208,7 +1215,7 @@ def generate_returns_curve_svg(output_path, data_rows):
         "\n",
         "\n".join(x_labels),
         "\n",
-        f"  <text x='{margin['left']}' y='{height - 10}' font-size='10' fill='#9ca3af'>数据来源: VIX定投策略 | 每日更新</text>",
+        f"  <text x='{margin['left']}' y='{height - 10}' font-size='10' fill='#9ca3af'>数据来源: VIX定投策略 | 仅定投日</text>",
         "</svg>"
     ]
 
@@ -1756,13 +1763,13 @@ def record_trades(trade_infos, state, date_str):
     with open(TRADES_FILE, 'a', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         for ti in trade_infos:
-            fee = max(0.01, ti['amount'] * 0.0001)
+            fee = ti.get('fee', max(0.01, ti['amount'] * 0.0001))
             writer.writerow([
                 ti['date'], ti['vix'], get_vix_zone(ti['vix']),
                 ti['action'], ti['amount'], ti['shares'],
-                ti['price'], fee, ti['amount'],
-                cash + ti['amount'] if ti['action'] == 'BUY' else cash,
-                cash, net_value, ti['label']
+                ti['price'], fee, ti.get('total_cost', ti['amount']),
+                ti.get('cash_before', cash), ti.get('cash_after', cash),
+                net_value, ti['label']
             ])
     print(f"[交易记录] 已记录 {len(trade_infos)} 笔交易")
 
@@ -1793,9 +1800,7 @@ def sync_to_public(state, dashboard):
     # 同步 daily_returns.csv 到 public（校验脚本要求）
     if DAILY_RETURNS_FILE.exists():
         public_returns = PUBLIC_DIR / "daily_returns.csv"
-        with open(DAILY_RETURNS_FILE, 'r', encoding='utf-8') as src:
-            with open(public_returns, 'w', encoding='utf-8') as dst:
-                dst.write(src.read())
+        public_returns.write_bytes(DAILY_RETURNS_FILE.read_bytes())
         print(f"[同步] 已同步 daily_returns.csv 到: {public_returns}")
 
 
@@ -1830,6 +1835,10 @@ def main():
         state['statistics'].get('last_trade_date'),
         get_next_trade_date(state, date_str)
     )
+
+    if config.get('history_policy', {}).get('trade_days_only') and not is_trading:
+        print(f"[跳过] {date_str} 不是双周定投日；按配置不保存非定投日历史")
+        return 0
 
     if args.vix is not None:
         vix = args.vix

@@ -2,14 +2,15 @@
 
 ## 概述
 
-本系统自动获取VIX恐慌指数和纳指100 ETF（513110）的价格数据，每日更新VIX定投策略的收益情况。
+本系统自动获取VIX恐慌指数和纳指100 ETF（513110）的价格数据，只在双周定投日更新交易和收益历史。
 
 **核心逻辑**：
 - 使用**昨日美股收盘后的VIX数据**，指导今日A股ETF的定投操作
-- 每日A股收盘后自动更新ETF收盘价和持仓收益
+- 双周定投日A股收盘后更新ETF收盘价、持仓和收益
 - 定投日（每双周周二）直接按VIX档位买入，不根据VIX卖出
 
-**策略版本**：V2.1（简化定投版，2026-09-08起生效）
+**策略版本**：V2.1（2026-03-31起按新规则与新锚点回归）
+**双周锚点**：2026-09-01；下次定投日为2026-09-15
 
 ---
 
@@ -36,13 +37,14 @@ V2.1不依据VIX主动卖出。
 | `scripts/auto_update_vix_dca.py` | 自动更新脚本 V2.1 |
 | `scripts/generate_vix_morning_signal.py` | 生成VIX数值与“今日怎么操作”卡片 |
 | `.github/workflows/vix_dca_morning_signal.yml` | 工作日08:30生成早盘提示，08:45失败补跑 |
-| `.github/workflows/vix_dca_daily_update.yml` | 下午更新ETF价格、持仓与收益 |
+| `.github/workflows/vix_dca_daily_update.yml` | 每周二下午检查，仅双周定投日更新 |
+| `scripts/rebuild_vix_dca.py` | 按V2.1和2026-09-01锚点重建历史 |
 | `decision-tracking/vix_dca_strategy/strategy_config.json` | 策略配置（档位、修正、风控参数） |
 | `decision-tracking/vix_dca_strategy/state.json` | 策略状态数据 |
 | `decision-tracking/vix_dca_strategy/today_signal.json` | 今日操作的机器可读数据 |
 | `public/vix_strategy/today_signal.html` | 策略页嵌入的今日操作卡片 |
 | `decision-tracking/vix_dca_strategy/dashboard_data.json` | 仪表板数据 |
-| `decision-tracking/vix_dca_strategy/daily_snapshot.csv` | 每日快照记录 |
+| `decision-tracking/vix_dca_strategy/daily_snapshot.csv` | 定投日快照记录 |
 | `decision-tracking/vix_dca_strategy/trades.csv` | 交易记录 |
 | `portfolio/VIX定投策略.md` | 网页展示文档 |
 | `public/vix_strategy/dashboard_data.json` | 网页数据源 |
@@ -76,15 +78,15 @@ python scripts/auto_update_vix_dca.py --force
 
 ### 执行时间
 
-- **北京时间**: 每天 15:30 ~ 15:40（A股收盘后）
-- **UTC时间**: 每天 07:30 ~ 07:40
-- **执行日**: 周一到周五（工作日）
+- **北京时间**: 每周二 15:30，15:40补跑
+- **UTC时间**: 每周二 07:30，07:40补跑
+- **写入条件**: 仅2026-09-01锚定的双周周二
 
 ### 手动触发
 
 在 GitHub 仓库页面：
 1. 进入 Actions 标签
-2. 选择 "VIX定投策略每日更新"
+2. 选择 "VIX定投策略双周定投更新"
 3. 点击 "Run workflow"
 4. 可选：指定日期、VIX值、价格，或强制更新
 
@@ -101,16 +103,15 @@ python scripts/auto_update_vix_dca.py --force
 
 ## 更新逻辑
 
-### 每日更新（无论是否定投日）
+### 双周定投日更新
 
-1. 获取今日VIX
-2. 获取今日ETF收盘价
-3. 计算持仓市值和收益
-4. 更新 `state.json`
-5. 更新 `dashboard_data.json`
-6. 记录每日快照到 `daily_snapshot.csv`
-7. 更新 `VIX定投策略.md` 文档
-8. 同步到 `public/vix_strategy/`
+1. 读取美国上一交易日VIX收盘值
+2. 获取定投日ETF收盘价
+3. 按固定档位买入并计算持仓收益
+4. 更新交易账本、状态、定投日快照和收益曲线
+5. 更新网页文档并同步到 `public/vix_strategy/`
+
+非定投日不写入交易、状态或收益历史；早盘“今日操作”卡片仍在工作日更新。
 
 ### 定投日额外操作
 
@@ -157,11 +158,10 @@ python scripts/auto_update_vix_dca.py --force
 
 | 日期 | 状态 | 说明 |
 |------|------|------|
-| 2026-03-24 | ✅ 已执行 | 初始建仓（标准定投，VIX=21.0） |
-| 2026-04-07 | ✅ 已执行 | 标准定投（VIX=19.5） |
-| 2026-05-05 | ⏳ 待定 | 下次定投日 |
-| 2026-05-19 | ⏳ 待定 | 双周定投 |
-| 2026-06-02 | ⏳ 待定 | 双周定投 |
+| 2026-09-01 | ✅ 已回归 | 新双周锚点 |
+| 2026-09-15 | ⏳ 待执行 | 下次定投日 |
+| 2026-09-29 | 📅 计划 | 双周定投 |
+| 2026-10-13 | 📅 计划 | 双周定投 |
 
 ---
 
@@ -171,9 +171,9 @@ python scripts/auto_update_vix_dca.py --force
 2. **ETF价格**：使用今日A股收盘后513110价格
 3. **交易日**：定投日如遇节假日顺延
 4. **数据备份**：Git历史自动备份所有数据变化
-5. **策略状态**：state.json 中 `strategy_state` 字段跟踪VIX历史、减仓比例、回流状态等，请勿手动修改
+5. **历史口径**：只保留V2.1规则下的新双周定投日数据
 
 ---
 
 **版本**: V2.1（简化定投版）
-**最后更新**: 2026-04-29
+**最后更新**: 2026-09-01
