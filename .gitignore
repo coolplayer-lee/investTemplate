@@ -43,6 +43,7 @@ __pycache__/
 !08-决策追踪/simulation_trades.csv
 !decision-tracking/vix_dca_strategy/daily_returns.csv
 !decision-tracking/vix_dca_strategy/daily_snapshot.csv
+!decision-tracking/vix_dca_strategy/trades.csv
 !public/vix_strategy/daily_returns.csv
 !08-决策追踪/vix_dca_strategy/daily_returns.csv
 !08-决策追踪/vix_dca_strategy/daily_snapshot.csv

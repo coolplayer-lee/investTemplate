@@ -15,12 +15,7 @@ import json
 import csv
 import re
 import sys
-import io
 from pathlib import Path
-
-# Windows 终端编码兼容
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 ROOT = Path(__file__).resolve().parents[1]
 STRATEGY_DIR = ROOT / "decision-tracking" / "vix_dca_strategy"
@@ -28,6 +23,15 @@ PUBLIC_DIR = ROOT / "public" / "vix_strategy"
 
 ERRORS = []
 WARNINGS = []
+
+
+def configure_console_encoding():
+    """仅在命令行入口配置Windows终端编码，避免模块导入时替换pytest输出流。"""
+    if sys.platform == 'win32':
+        if hasattr(sys.stdout, 'reconfigure'):
+            sys.stdout.reconfigure(encoding='utf-8')
+        if hasattr(sys.stderr, 'reconfigure'):
+            sys.stderr.reconfigure(encoding='utf-8')
 
 
 def error(msg):
@@ -53,6 +57,25 @@ def load_csv_rows(path):
     with open(path, 'r', encoding='utf-8', newline='') as f:
         reader = csv.DictReader(f)
         return list(reader)
+
+
+def build_cumulative_buy_history(rows, trades):
+    """按完整交易账本重建每个收益记录日的累计投入。"""
+    buys_by_date = {}
+    for trade in trades:
+        if trade.get('action') != 'BUY':
+            continue
+        trade_date = trade.get('date')
+        amount = float(trade.get('amount', 0) or 0)
+        buys_by_date[trade_date] = buys_by_date.get(trade_date, 0.0) + amount
+
+    cumulative_buy = 0.0
+    history = {}
+    for row in rows:
+        row_date = row['date']
+        cumulative_buy += buys_by_date.get(row_date, 0.0)
+        history[row_date] = cumulative_buy
+    return history
 
 
 def check_state_dashboard_consistency():
@@ -105,23 +128,34 @@ def check_daily_returns():
         error("daily_returns.csv 为空")
         return
 
-    # 重建 cumulative_buy 历史
-    state = load_json(STRATEGY_DIR / "state.json")
-    trades = []
-    # 从 dashboard 读取交易记录
-    db = load_json(STRATEGY_DIR / "dashboard_data.json")
-    for t in db.get('recent_trades', []):
-        if t.get('action') == 'BUY':
-            trades.append(t)
+    errors_before = len(ERRORS)
 
-    cumulative_buy = 0.0
-    cum_history = {}
-    for row in rows:
-        date = row['date']
-        # 检查是否有当日买入
-        buy_amount = sum(t['amount'] for t in trades if t['date'] == date)
-        cumulative_buy += buy_amount
-        cum_history[date] = cumulative_buy
+    # 使用完整交易账本重建 cumulative_buy 历史；dashboard.recent_trades 只有展示用途，会截断。
+    state = load_json(STRATEGY_DIR / "state.json")
+    trades_path = STRATEGY_DIR / "trades.csv"
+    if not trades_path.exists():
+        error("trades.csv 缺失，无法重建累计投入")
+        return
+    trades = load_csv_rows(trades_path)
+    cum_history = build_cumulative_buy_history(rows, trades)
+
+    ledger_total = sum(
+        float(t.get('amount', 0) or 0)
+        for t in trades
+        if t.get('action') == 'BUY'
+    )
+    state_total = float(state.get('statistics', {}).get('cumulative_buy', 0) or 0)
+    if abs(ledger_total - state_total) > 0.01:
+        error(f"trades.csv累计买入与state.json不一致: trades={ledger_total}, state={state_total}")
+
+    ledger_shares = sum(
+        int(float(t.get('shares', 0) or 0)) * (1 if t.get('action') == 'BUY' else -1)
+        for t in trades
+        if t.get('action') in ('BUY', 'SELL')
+    )
+    state_shares = int(state.get('position', {}).get('shares', 0) or 0)
+    if ledger_shares != state_shares:
+        error(f"trades.csv持仓份额与state.json不一致: trades={ledger_shares}, state={state_shares}")
 
     prev_return_pct = None
     for i, row in enumerate(rows):
@@ -166,7 +200,7 @@ def check_daily_returns():
 
         prev_return_pct = total_return_pct
 
-    if not any(e for e in ERRORS if 'daily_returns.csv' in e or '口径异常' in e):
+    if len(ERRORS) == errors_before:
         ok("daily_returns.csv 收益率计算正确且口径统一")
 
 
@@ -331,4 +365,5 @@ def main():
 
 
 if __name__ == "__main__":
+    configure_console_encoding()
     sys.exit(main())
