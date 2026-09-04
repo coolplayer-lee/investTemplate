@@ -1,0 +1,102 @@
+name: VIX策略早盘操作提示
+
+on:
+  schedule:
+    # 北京时间工作日08:30；08:45仅在首轮未成功生成时补跑。
+    - cron: '30,45 0 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '指定日期 (YYYY-MM-DD)，默认今天'
+        required: false
+        default: ''
+      vix:
+        description: '指定VIX值（可选）'
+        required: false
+        default: ''
+      vix_date:
+        description: '指定VIX市场日期（可选）'
+        required: false
+        default: ''
+      force:
+        description: '强制重新生成'
+        required: false
+        default: 'false'
+
+concurrency:
+  group: vix-dca-morning-signal-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  generate-signal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置北京时间
+        run: sudo timedatectl set-timezone Asia/Shanghai
+
+      - name: 检查今日提示是否已生成
+        id: freshness
+        shell: bash
+        run: |
+          TARGET_DATE="${{ github.event.inputs.date }}"
+          if [ -z "$TARGET_DATE" ]; then TARGET_DATE=$(date +'%Y-%m-%d'); fi
+          CURRENT_DATE=$(jq -r '.signal_date // empty' decision-tracking/vix_dca_strategy/today_signal.json 2>/dev/null || true)
+          DATA_STATUS=$(jq -r '.data_status // empty' decision-tracking/vix_dca_strategy/today_signal.json 2>/dev/null || true)
+          if [ "$CURRENT_DATE" = "$TARGET_DATE" ] && [ "$DATA_STATUS" = "fresh" ] && [ "${{ github.event.inputs.force }}" != "true" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "今日提示已使用正常数据生成，跳过补触发。"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 设置Python环境
+        if: steps.freshness.outputs.skip != 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: 安装依赖
+        if: steps.freshness.outputs.skip != 'true'
+        run: pip install yfinance pandas
+
+      - name: 生成今日操作提示
+        if: steps.freshness.outputs.skip != 'true'
+        shell: bash
+        run: |
+          ARGS=""
+          if [ -n "${{ github.event.inputs.date }}" ]; then ARGS="$ARGS --date ${{ github.event.inputs.date }}"; fi
+          if [ -n "${{ github.event.inputs.vix }}" ]; then ARGS="$ARGS --vix ${{ github.event.inputs.vix }}"; fi
+          if [ -n "${{ github.event.inputs.vix_date }}" ]; then ARGS="$ARGS --vix-date ${{ github.event.inputs.vix_date }}"; fi
+          python scripts/generate_vix_morning_signal.py $ARGS
+
+      - name: 写入任务摘要
+        if: steps.freshness.outputs.skip != 'true'
+        shell: bash
+        run: |
+          SIGNAL=decision-tracking/vix_dca_strategy/today_signal.json
+          echo "## VIX今日操作" >> "$GITHUB_STEP_SUMMARY"
+          jq -r '"- 日期：\(.signal_date)\n- VIX：\(.vix)（数据日 \(.vix_market_date)）\n- 操作：\(.action_text)\n- 下次定投：\(.next_trade_date)"' "$SIGNAL" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: 提交提示数据
+        if: steps.freshness.outputs.skip != 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add decision-tracking/vix_dca_strategy/today_signal.json
+          git add decision-tracking/vix_dca_strategy/today_signal.html
+          git add public/vix_strategy/today_signal.json
+          git add public/vix_strategy/today_signal.html
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "📍 VIX早盘操作提示 $(date +'%Y-%m-%d')"
+            git push
+          fi

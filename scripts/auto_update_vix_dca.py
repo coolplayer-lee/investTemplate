@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-VIX定投策略自动更新脚本 V2.0
+VIX定投策略自动更新脚本 V2.1
 完整策略实现：
-  - 基础档位买入
-  - 趋势修正（×0.7 / ×1.3 / ×1.0）
-  - 封顶处理（VIX≥30时≤6000）
-  - 极端风控（VIX≥35且上升：暂停买入+减仓5%）
-  - 连续低VIX卖出（连续2期<15/12/10）
-  - 恐慌回流（VIX重新≥25/30买回）
-  - 应急补仓（盘中VIX≥32，月限1次）
+  - 每个双周定投日都买入
+  - VIX越高买入金额越大
+  - 单期买入金额最高10000元
+  - 不使用趋势修正，不依据VIX主动卖出
 
 自动获取VIX和ETF价格，每日更新收益。
-买卖：每双周周二（根据VIX值决定买入金额）
+买入：每双周周二（根据VIX值决定买入金额）
 收益：每日更新（A股收盘后自动执行）
 """
 
@@ -786,128 +783,31 @@ def update_state(state, config, date_str, vix, price, is_trading):
     # 确保strategy_state存在
     ss = state.setdefault('strategy_state', {
         'biweekly_vix_log': [],
-        'cumulative_sell_ratio': 0.0,
-        'reduction_pool': {'total_cash': 0.0, 'remaining_cash': 0.0},
-        'reflow_status': 'none',
-        'extreme_risk': {'active': False}
+        'vix_based_selling_enabled': False,
+        'single_period_buy_cap': 10000
     })
 
-    # 获取上一期VIX（用于连续判断和回流判断）
+    # 保留VIX日志用于审计，不参与趋势修正或卖出判断
     vix_log = ss.get('biweekly_vix_log', [])
-    last_vix = vix_log[-1]['vix'] if vix_log else None
 
     if is_trading:
         # ===== 定投日策略执行 =====
         print(f"\n=== 定投日策略执行 ({date_str}, VIX={vix}) ===")
 
-        # --- 步骤4：极端风控（最优先，使用纯历史VIX，不含当期） ---
-        erc_triggered, erc_msg, erc_sell_ratio = check_extreme_risk_control(vix, state, config)
-        print(f"[风控] {erc_msg}")
+        buy_amount, buy_label = get_base_buy_amount(vix, config)
+        print(f"[买入] {buy_label} → {buy_amount}元")
 
-        if erc_triggered:
-            # 极端风控：暂停买入，执行减仓5%
-            if erc_sell_ratio and erc_sell_ratio > 0:
-                trade_info, cash_added = execute_sell(state, erc_sell_ratio, price, "极端风控减仓", date_str)
-                if trade_info:
-                    trades_executed.append(trade_info)
-                    trade_infos.append(trade_info)
-                    notes.append(f"极端风控减仓5%，释放{cash_added:.2f}元至减仓资金池")
-                    print(f"[交易] 极端风控减仓: 卖出{trade_info['shares']}份 @ {price}元，金额{trade_info['amount']:.2f}元")
-            notes.append("极端风控激活：暂停本期定投")
-            print("[交易] 极端风控激活：本期定投暂停")
-            # 风控日仍滚动下次定投日
-            roll_next_trade_schedule(state, date_str)
-            # 记录本期VIX（风控日也要记录）
-            vix_log.append({'date': date_str, 'vix': vix})
-            ss['biweekly_vix_log'] = vix_log
-        else:
-            # --- 步骤1：基础档位 ---
-            base_amount, base_label = get_base_buy_amount(vix, config)
-            print(f"[买入] 基础档位: {base_label} → {base_amount}元")
+        vix_log.append({'date': date_str, 'vix': vix})
+        ss['biweekly_vix_log'] = vix_log
 
-            adjusted_amount = base_amount
-            adjusted_label = base_label
+        trade_info = execute_buy(state, buy_amount, price, buy_label, date_str)
+        if trade_info:
+            trades_executed.append(trade_info)
+            trade_infos.append(trade_info)
+            notes.append(f"{buy_label}: 买入{trade_info['shares']}份 @ {price}元")
+            print(f"[交易] {buy_label}: 买入{trade_info['shares']}份 @ {price}元，金额{buy_amount}元")
 
-            # --- 步骤2：趋势修正（使用纯历史VIX，不含当期） ---
-            if base_amount > 0:
-                mult, adj_msg, mean_vix, diff = calculate_trend_adjustment(vix, state, config)
-                if mult is not None:
-                    adjusted_amount = round(base_amount * mult)
-                    adjusted_label = f"{base_label}(趋势修正×{mult})"
-                    print(f"[买入] {adj_msg}")
-                    print(f"[买入] 趋势修正后: {adjusted_amount}元")
-                else:
-                    print("[买入] 趋势修正: 历史不足，不修正")
-
-            # --- 步骤3：封顶处理 ---
-            capped_amount, cap_msg = apply_cap(adjusted_amount, vix, config)
-            if cap_msg:
-                print(f"[买入] {cap_msg}")
-                adjusted_label = f"{adjusted_label}(封顶)"
-            adjusted_amount = capped_amount
-
-            # 记录本期VIX（在卖出/回流判断前写入，用于下期计算）
-            # 但卖出/回流判断中的"上期"仍基于旧的vix_log[-1]
-            vix_log.append({'date': date_str, 'vix': vix})
-            ss['biweekly_vix_log'] = vix_log
-
-            # --- 卖出规则 ---
-            sell_ratio, sell_label, sell_msg = check_sell_rules(vix, last_vix, state, config)
-            if sell_ratio > 0:
-                print(f"[卖出] {sell_msg}")
-                trade_info, cash_added = execute_sell(state, sell_ratio, price, sell_label, date_str)
-                if trade_info:
-                    trades_executed.append(trade_info)
-                    trade_infos.append(trade_info)
-                    notes.append(f"{sell_label}: 新增减仓{sell_ratio*100:.1f}%，释放{cash_added:.2f}元")
-                    print(f"[交易] {sell_label}: 卖出{trade_info['shares']}份 @ {price}元，金额{trade_info['amount']:.2f}元")
-            else:
-                if sell_label:
-                    print(f"[卖出] {sell_msg}")
-                else:
-                    print("[卖出] 连续低VIX条件不满足，不减仓")
-
-            # --- 回流规则 ---
-            reflow_amount, reflow_label, reflow_msg = check_reflow_rules(vix, state, config, last_vix)
-            if reflow_amount > 0:
-                print(f"[回流] {reflow_msg}")
-                # 回流买入
-                trade_info = execute_buy(state, reflow_amount, price, reflow_label, date_str)
-                if trade_info:
-                    trades_executed.append(trade_info)
-                    trade_infos.append(trade_info)
-                    notes.append(f"{reflow_label}: 买回{trade_info['shares']}份 @ {price}元")
-                    print(f"[交易] {reflow_label}: 买入{trade_info['shares']}份 @ {price}元，金额{reflow_amount:.2f}元")
-                    # 从资金池扣除
-                    pool = ss['reduction_pool']
-                    pool['remaining_cash'] = max(0.0, pool.get('remaining_cash', 0.0) - reflow_amount)
-            else:
-                pool = ss.get('reduction_pool', {})
-                if pool.get('remaining_cash', 0) > 0:
-                    print(f"[回流] 有回流资金{pool['remaining_cash']:.2f}元，但VIX条件未满足（上期={last_vix}, 本期={vix}）")
-                else:
-                    print("[回流] 无待回流资金")
-
-            # --- 执行基础买入 ---
-            if adjusted_amount > 0:
-                trade_info = execute_buy(state, adjusted_amount, price, adjusted_label, date_str)
-                if trade_info:
-                    trades_executed.append(trade_info)
-                    trade_infos.append(trade_info)
-                    notes.append(f"{adjusted_label}: 买入{trade_info['shares']}份 @ {price}元")
-                    print(f"[交易] {adjusted_label}: 买入{trade_info['shares']}份 @ {price}元，金额{adjusted_amount}元")
-            else:
-                print(f"[交易] {adjusted_label}: 本期不买入")
-
-            # 滚动下次定投日
-            roll_next_trade_schedule(state, date_str)
-
-        # 记录本期VIX后的日志摘要
-        print(f"\n[状态] 累计减仓比例: {ss.get('cumulative_sell_ratio', 0)*100:.1f}%")
-        pool = ss.get('reduction_pool', {})
-        print(f"[状态] 减仓资金池: 累计{pool.get('total_cash', 0):.2f}元, 剩余{pool.get('remaining_cash', 0):.2f}元")
-        print(f"[状态] 回流状态: {ss.get('reflow_status', 'none')}")
-        print(f"[状态] 极端风控: {'激活' if ss.get('extreme_risk', {}).get('active') else '未激活'}")
+        roll_next_trade_schedule(state, date_str)
     else:
         # 非定投日：只更新收益
         print(f"\n=== 非定投日 ({date_str}) ===")
@@ -977,7 +877,8 @@ def update_dashboard_data(dashboard, state, date_str, vix, price, trade_infos):
         days_until_next = (datetime.strptime(next_trade_date, '%Y-%m-%d') - datetime.strptime(date_str, '%Y-%m-%d')).days
 
     dashboard['last_update'] = date_str
-    dashboard['strategy_version'] = 'V2.0'
+    dashboard['version'] = 'V2.1'
+    dashboard['strategy_version'] = 'V2.1'
     dashboard['account'] = {
         'initial_capital': round(principal, 2),
         'cash': round(cash, 2),
@@ -1002,13 +903,8 @@ def update_dashboard_data(dashboard, state, date_str, vix, price, trade_infos):
         'date': date_str
     }
     dashboard['strategy_state'] = {
-        'cumulative_sell_ratio': round(ss.get('cumulative_sell_ratio', 0.0), 4),
-        'reduction_pool': {
-            'total_cash': round(ss.get('reduction_pool', {}).get('total_cash', 0.0), 2),
-            'remaining_cash': round(ss.get('reduction_pool', {}).get('remaining_cash', 0.0), 2)
-        },
-        'reflow_status': ss.get('reflow_status', 'none'),
-        'extreme_risk_active': ss.get('extreme_risk', {}).get('active', False)
+        'vix_based_selling_enabled': False,
+        'single_period_buy_cap': 10000
     }
     dashboard['schedule'] = {
         'frequency': '每双周周二',
@@ -1047,8 +943,6 @@ def update_markdown_template(state, date_str, vix, price):
     principal = get_tracking_principal(state)
     cash = float(acc.get('cash', 0) or 0)
     total_assets = get_total_assets_value(state)
-    ss = state.get('strategy_state', {})
-    pool = ss.get('reduction_pool', {})
 
     dashboard = load_json(DASHBOARD_FILE)
     snapshots = dashboard.get('daily_snapshots', [])[:7]
@@ -1064,11 +958,18 @@ def update_markdown_template(state, date_str, vix, price):
 
     content = f"""# VIX定投策略 - 纳指100 ETF（**{ETF_CODE}**）
 
-> **标的代码：{ETF_CODE}** | 策略版本：**V2.0（原策略·最终版）** | 启动日期：2026-03-24  
-> **买卖执行：每双周周二** | **收益更新：每日** | 投入本金：{principal:,.2f}元  
+> **标的代码：{ETF_CODE}** | 策略版本：**V2.1（简化定投版）** | 启动日期：2026-03-24
+> **买入执行：每双周周二** | **收益更新：每日** | 投入本金：{principal:,.2f}元
 > **双周锚点：{anchor_date}（每双周周二定投）**
+> **V2.1生效日期：2026-09-08；历史交易不追溯调整**
 
 ---
+
+## 今日操作
+
+<iframe src="/vix_strategy/today_signal.html" title="VIX今日操作提示" width="100%" height="285" style="border:0;overflow:hidden" loading="eager"></iframe>
+
+> 每个工作日北京时间08:30自动更新，08:45失败补跑；使用上一交易日VIX收盘值。下午任务继续更新ETF价格和组合收益。
 
 ## 当前收益（{date_str}）
 
@@ -1081,10 +982,8 @@ def update_markdown_template(state, date_str, vix, price):
 | **总收益** | **{perf['total_pnl']:+.2f}元（{perf['total_return_pct']:+.2f}%）** |
 | **剩余现金** | {cash:,.2f}元 |
 | **总资产** | {total_assets:,.2f}元 |
-| **累计减仓** | {ss.get('cumulative_sell_ratio', 0)*100:.1f}% |
-| **减仓资金池** | 累计{pool.get('total_cash', 0):.2f}元 / 剩余{pool.get('remaining_cash', 0):.2f}元 |
-| **回流状态** | {ss.get('reflow_status', 'none')} |
-| **极端风控** | {'🔴 激活' if ss.get('extreme_risk', {}).get('active') else '🟢 未激活'} |
+| **当前规则** | 每期都买，VIX越高买得越多 |
+| **VIX卖出** | 已停用 |
 
 ---
 
@@ -1142,78 +1041,58 @@ def update_markdown_template(state, date_str, vix, price):
     content += """
 ---
 
-## 策略说明（原策略·最终版）
+## 策略说明（V2.1简化定投版）
 
 ### 一、基础框架
 - **标的**：纳斯达克100 ETF（场内513110，逻辑跟踪QQQ）
-- **操作频率**：每**双周周二**国内白天执行（参考**美国周一**的VIX收盘价）
-- **资金来源**：每月约1万元，按双周分批预留（未用完现金留存）
-- **禁止行为**：盘中操作、追涨杀跌、主观干预
+- **操作频率**：每双周周二国内交易时段执行，参考美国上一交易日VIX收盘价
+- **资金来源**：每月约1万元；低波动期节余资金留作恐慌期加仓储备
+- **核心纪律**：每期都买、VIX越高买得越多、不依据VIX卖出
 
-### 二、买入规则（按顺序执行）
+### 二、买入规则
 
-#### 步骤1：基础档位
-| VIX区间 | 基础金额 |
-|:---:|:---:|
-| VIX < 15 | 0 元 |
-| 15 ≤ VIX < 18 | 1,000 元 |
-| 18 ≤ VIX < 20 | 1,500 元 |
-| 20 ≤ VIX < 25 | 3,000 元 |
-| 25 ≤ VIX < 30 | 4,500 元 |
-| 30 ≤ VIX < 35 | 6,000 元 |
-| VIX ≥ 35 | 6,000 元（封顶） |
+| VIX区间 | 每期买入金额 | 含义 |
+|:---:|---:|:---|
+| VIX < 15 | 4,000元 | 低波动也保持基础定投 |
+| 15 ≤ VIX < 20 | 5,000元 | 正常定投 |
+| 20 ≤ VIX < 25 | 6,000元 | 轻度恐慌加仓 |
+| 25 ≤ VIX < 30 | 8,000元 | 明显恐慌加仓 |
+| VIX ≥ 30 | 10,000元 | 极端恐慌加仓，单期封顶 |
 
-#### 步骤2：趋势修正因子
-- 计算**前两个双周周二**收盘VIX均值
-- 当期VIX **>** 均值（恐慌加剧）→ 基础金额 × **0.7**
-- 当期VIX **<** 均值（恐慌消退）→ 基础金额 × **1.3**
-- 当期VIX ≈ 均值（差≤0.5）→ 基础金额 × **1.0**
-
-#### 步骤3：封顶处理
-- 若VIX ≥ 30，修正后买入金额**不得超过6,000元**
-
-#### 步骤4：极端风控（优先于买入）
-- **触发**：VIX ≥ 35 **且** 当期VIX > 前两期均值
-- **操作**：暂停当期定投 + **额外减仓5%**
-- **恢复**：VIX回落至<35时恢复正常买入
+- 不使用趋势倍率；VIX低于15也不停投。
+- 单期最多投入10,000元。
 
 ### 三、卖出规则
-**必须连续2个双周周二**收盘VIX均满足区间：
+V2.1不因VIX高低主动卖出；如需减仓，仅按整个投资组合的仓位上限另行再平衡。
 
 | 条件 | 减仓比例（当前持仓市值） |
 |:---|:---:|
-| 连续2期 VIX < 15 | 10% |
-| 连续2期 VIX < 12 | 15%（累计） |
-| 连续2期 VIX < 10 | 25%（累计） |
+| 旧低VIX卖出规则 | 已停用 |
 
-- 累计减仓总额不超过**40%**（永远保留至少**60%底仓**）
-- 减仓所得现金保留账户，用于后续回流
+- 不执行基于VIX的卖出。
 
-### 四、减仓资金回流规则
-当发生过减仓，后续VIX**重新回升**到指定阈值时买回：
+### 四、已停用规则
+旧回流与应急补仓规则均已停用：
 
 | 触发条件 | 买回比例 |
 |:---|:---:|
-| VIX **重新 ≥ 25** | 买回减仓资金的 **50%** |
-| VIX **重新 ≥ 30** | 买回剩余 **50%** |
+| VIX **重新 ≥ 25** | 停用 |
+| VIX **重新 ≥ 30** | 停用 |
 
-- 回流买入在双周周二与当期定投一同执行
-- 回流金额**不占用**当期买入封顶额度
+- 不执行回流买入。
 
-### 五、应急补仓（可选）
-- **触发**：单周盘中VIX ≥ 32
-- **操作**：本周内额外买入 **1,500元**
-- **限制**：每月最多1次，不与主定投冲突
+### 五、应急补仓（已停用）
+- 不执行盘中应急补仓，只在双周定投日操作。
 
 ### 六、执行纪律
 | 项目 | 规则 |
 |:---|:---|
-| 操作日 | 国内周二白天（参考美国周一收盘VIX） |
-| 买入计算 | 基础档位 → 趋势修正 → 封顶 → 风控检查 |
-| 卖出判断 | 连续2期VIX达标才减仓，累计≤40% |
-| 回流 | VIX重新≥25和≥30时按比例买回 |
-| 应急补仓 | VIX≥32可加1,500，月限1次（可选） |
-| 禁止行为 | 盘中随机买卖、追涨杀跌、主观干预 |
+| 操作日 | 国内双周周二，遇A股节假日顺延 |
+| 信号 | 美国上一交易日VIX收盘值 |
+| 买入计算 | 直接查询VIX档位，不做趋势修正 |
+| 单期上限 | 10,000元 |
+| 卖出 | 不依据VIX卖出 |
+| 下单 | 实盘使用限价单，避免明显溢价时追价 |
 
 ---
 
@@ -1924,7 +1803,7 @@ def sync_to_public(state, dashboard):
 # ==================== 主程序 ====================
 
 def main():
-    parser = argparse.ArgumentParser(description='VIX定投策略自动更新 V2.0')
+    parser = argparse.ArgumentParser(description='VIX定投策略自动更新 V2.1')
     parser.add_argument('--date', help='日期 (YYYY-MM-DD)，默认今天')
     parser.add_argument('--vix', type=float, help='VIX值，默认自动获取')
     parser.add_argument('--price', type=float, help='ETF价格，默认自动获取')
@@ -1933,7 +1812,7 @@ def main():
     args = parser.parse_args()
 
     date_str = args.date or datetime.now().strftime('%Y-%m-%d')
-    print(f"=== VIX定投策略自动更新 V2.0 ({date_str}) ===")
+    print(f"=== VIX定投策略自动更新 V2.1 ({date_str}) ===")
     print(f"数据时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print()
 
@@ -1988,7 +1867,7 @@ def main():
     print()
 
     if is_trading:
-        print(f"[定投日] 今天是定投日，将执行完整策略")
+        print(f"[定投日] 今天是定投日，将按VIX档位执行买入")
     else:
         print(f"[非定投日] 只更新收益，不执行交易")
     print()

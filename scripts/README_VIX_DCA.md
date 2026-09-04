@@ -1,4 +1,4 @@
-# VIX定投策略自动更新系统 V2.0
+# VIX定投策略自动更新系统 V2.1
 
 ## 概述
 
@@ -7,43 +7,25 @@
 **核心逻辑**：
 - 使用**昨日美股收盘后的VIX数据**，指导今日A股ETF的定投操作
 - 每日A股收盘后自动更新ETF收盘价和持仓收益
-- 定投日（每双周周二）根据完整策略执行：基础档位 → 趋势修正 → 封顶 → 风控 → 卖出 → 回流
+- 定投日（每双周周二）直接按VIX档位买入，不根据VIX卖出
 
-**策略版本**：V2.0（原策略·最终版）
+**策略版本**：V2.1（简化定投版，2026-09-08起生效）
 
 ---
 
 ## 策略规则速查
 
-### 买入规则（按顺序执行）
+### 买入规则
 
 | 步骤 | 规则 | 说明 |
 |:---|:---|:---|
-| 1. 基础档位 | VIX<15:0 / 15-18:1000 / 18-20:1500 / 20-25:3000 / 25-30:4500 / 30-35:6000 / ≥35:6000 | 根据VIX区间确定基础金额 |
-| 2. 趋势修正 | 恐慌加剧(>均值): ×0.7 / 恐慌消退(<均值): ×1.3 / 稳定(差≤0.5): ×1.0 | 基于前两个双周周二VIX均值 |
-| 3. 封顶处理 | VIX≥30时，修正后金额≤6000 | 即使×1.3后超出，也只买6000 |
-| 4. 极端风控 | VIX≥35且>均值 → 暂停买入+减仓5% | 优先于一切买入操作 |
+| 1. 固定档位 | VIX<15:4000 / 15-20:5000 / 20-25:6000 / 25-30:8000 / ≥30:10000 | 每期都买，VIX越高买得越多 |
 
 ### 卖出规则
 
-| 条件 | 减仓比例 |
-|:---|:---:|
-| 连续2期 VIX < 15 | 10% |
-| 连续2期 VIX < 12 | 15%（累计） |
-| 连续2期 VIX < 10 | 25%（累计） |
+V2.1不依据VIX主动卖出。
 
-- 累计减仓不超过40%（永留60%底仓）
-- 减仓资金进入资金池，后续回流接回
-
-### 回流规则
-
-| 触发条件 | 买回比例 |
-|:---|:---:|
-| VIX 重新 ≥ 25 | 50% |
-| VIX 重新 ≥ 30 | 剩余50% |
-
-- 回流不占用当期买入封顶额度
-- 与当期定投一同在双周周二执行
+趋势修正、极端恐慌减仓、低VIX减仓、资金回流和盘中应急补仓均已停用。
 
 ---
 
@@ -51,10 +33,14 @@
 
 | 文件 | 说明 |
 |------|------|
-| `scripts/auto_update_vix_dca.py` | 自动更新脚本 V2.0 |
-| `.github/workflows/vix_dca_daily_update.yml` | GitHub Actions工作流 |
+| `scripts/auto_update_vix_dca.py` | 自动更新脚本 V2.1 |
+| `scripts/generate_vix_morning_signal.py` | 生成VIX数值与“今日怎么操作”卡片 |
+| `.github/workflows/vix_dca_morning_signal.yml` | 工作日08:30生成早盘提示，08:45失败补跑 |
+| `.github/workflows/vix_dca_daily_update.yml` | 下午更新ETF价格、持仓与收益 |
 | `decision-tracking/vix_dca_strategy/strategy_config.json` | 策略配置（档位、修正、风控参数） |
 | `decision-tracking/vix_dca_strategy/state.json` | 策略状态数据 |
+| `decision-tracking/vix_dca_strategy/today_signal.json` | 今日操作的机器可读数据 |
+| `public/vix_strategy/today_signal.html` | 策略页嵌入的今日操作卡片 |
 | `decision-tracking/vix_dca_strategy/dashboard_data.json` | 仪表板数据 |
 | `decision-tracking/vix_dca_strategy/daily_snapshot.csv` | 每日快照记录 |
 | `decision-tracking/vix_dca_strategy/trades.csv` | 交易记录 |
@@ -131,14 +117,10 @@ python scripts/auto_update_vix_dca.py --force
 如果今天是定投日（每双周周二），按以下顺序执行：
 
 ```
-1. 记录本期VIX到历史日志
-2. 极端风控检查（VIX≥35且上升？→ 暂停+减仓5%）
-3. 基础档位计算
-4. 趋势修正（×0.7 / ×1.3 / ×1.0）
-5. 封顶处理（VIX≥30时≤6000）
-6. 卖出检查（连续2期低VIX？→ 减仓）
-7. 回流检查（VIX重新≥25/30？→ 买回）
-8. 执行基础买入
+1. 读取美国上一交易日VIX收盘值
+2. 根据固定档位确定买入金额
+3. 执行买入并记录本期VIX
+4. 滚动到下一个双周定投日
 ```
 
 ---
@@ -193,5 +175,5 @@ python scripts/auto_update_vix_dca.py --force
 
 ---
 
-**版本**: V2.0（原策略·最终版）  
+**版本**: V2.1（简化定投版）
 **最后更新**: 2026-04-29

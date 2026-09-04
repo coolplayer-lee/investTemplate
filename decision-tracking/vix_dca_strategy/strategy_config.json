@@ -1,189 +1,66 @@
 {
   "strategy_name": "VIX定投策略_纳指100",
-  "version": "V2.0",
+  "version": "V2.1",
   "start_date": "2026-03-24",
+  "effective_date": "2026-09-08",
   "etf_code": "513110",
   "etf_name": "纳斯达克100 ETF",
-  "description": "基于VIX恐慌指数的定投策略：每双周周二执行，基础档位×趋势修正，高VIX多买，低VIX减仓，恐慌回升回流接回",
-
+  "description": "每双周固定买入，VIX越高买得越多；不因VIX高低卖出",
   "buy_rules": {
-    "description": "步骤1：基础档位 → 步骤2：趋势修正（×0.7/×1.3/×1.0） → 步骤3：封顶（≥30时≤6000） → 步骤4：极端风控检查",
+    "description": "参考美国上一交易日VIX收盘值，直接按档位确定本期买入金额",
     "base_tiers": [
       {
         "vix_min": 0,
         "vix_max": 15,
-        "amount": 0,
-        "label": "暂停定投",
-        "description": "VIX < 15，市场平稳，暂停定投"
+        "amount": 4000,
+        "label": "低波动基础定投",
+        "description": "VIX < 15，仍保持基础投入4000元"
       },
       {
         "vix_min": 15,
-        "vix_max": 18,
-        "amount": 1000,
-        "label": "小额定投",
-        "description": "15 ≤ VIX < 18，小额定投1000元"
-      },
-      {
-        "vix_min": 18,
         "vix_max": 20,
-        "amount": 1500,
-        "label": "偏低定投",
-        "description": "18 ≤ VIX < 20，偏低定投1500元"
+        "amount": 5000,
+        "label": "正常定投",
+        "description": "15 ≤ VIX < 20，投入5000元"
       },
       {
         "vix_min": 20,
         "vix_max": 25,
-        "amount": 3000,
-        "label": "标准定投",
-        "description": "20 ≤ VIX < 25，标准定投3000元"
+        "amount": 6000,
+        "label": "轻度恐慌加仓",
+        "description": "20 ≤ VIX < 25，投入6000元"
       },
       {
         "vix_min": 25,
         "vix_max": 30,
-        "amount": 4500,
-        "label": "加大定投",
-        "description": "25 ≤ VIX < 30，加大定投4500元"
+        "amount": 8000,
+        "label": "明显恐慌加仓",
+        "description": "25 ≤ VIX < 30，投入8000元"
       },
       {
         "vix_min": 30,
-        "vix_max": 35,
-        "amount": 6000,
-        "label": "加倍定投",
-        "description": "30 ≤ VIX < 35，加倍定投6000元"
-      },
-      {
-        "vix_min": 35,
         "vix_max": 999,
-        "amount": 6000,
-        "label": "封顶定投",
-        "description": "VIX ≥ 35，基础金额封顶6000元"
+        "amount": 10000,
+        "label": "极端恐慌封顶加仓",
+        "description": "VIX ≥ 30，投入10000元并封顶"
       }
-    ],
-    "trend_adjustment": {
-      "enabled": true,
-      "description": "计算前两个双周周二的收盘VIX均值，与当期VIX比较",
-      "lookback_periods": 2,
-      "threshold": 0.5,
-      "multipliers": {
-        "rising": 0.7,
-        "description_rising": "当期VIX > 均值（恐慌加剧）→ 基础金额 × 0.7",
-        "falling": 1.3,
-        "description_falling": "当期VIX < 均值（恐慌消退）→ 基础金额 × 1.3",
-        "stable": 1.0,
-        "description_stable": "当期VIX ≈ 均值（差值≤0.5）→ 基础金额 × 1.0"
-      }
-    },
-    "cap": {
-      "enabled": true,
-      "description": "若VIX ≥ 30，修正后的买入金额不得超过6000元",
-      "vix_threshold": 30,
-      "max_amount": 6000
-    },
-    "extreme_risk_control": {
-      "enabled": true,
-      "description": "方案一极端风控（优先于买入执行）",
-      "trigger_vix": 35,
-      "condition": "vix_rising_vs_mean",
-      "action": {
-        "buy_amount": 0,
-        "sell_ratio": 0.05,
-        "description": "触发时：暂停当期定投 + 额外减仓5%（卖出当前持仓总市值的5%）"
-      },
-      "recovery_condition": "当VIX从≥35回落至<35时，恢复正常买入；之前减仓的5%资金在后续VIX ≥ 30时与常规回流合并买回"
-    }
-  },
-
-  "sell_rules": {
-    "description": "必须连续2个双周周二收盘VIX均满足区间，才执行减仓",
-    "consecutive_periods_required": 2,
-    "max_total_reduction": 0.40,
-    "preserve_min_position": 0.60,
-    "tiers": [
-      {
-        "vix_max": 15,
-        "vix_min": 0,
-        "reduce_ratio": 0.10,
-        "label": "小幅减仓",
-        "description": "连续2期 VIX < 15：减仓10%（目标仓位90%）"
-      },
-      {
-        "vix_max": 12,
-        "vix_min": 0,
-        "reduce_ratio": 0.15,
-        "label": "中度减仓",
-        "description": "连续2期 VIX < 12：累计减仓15%（目标仓位85%）"
-      },
-      {
-        "vix_max": 10,
-        "vix_min": 0,
-        "reduce_ratio": 0.25,
-        "label": "大幅减仓",
-        "description": "连续2期 VIX < 10：累计减仓25%（目标仓位75%）"
-      }
-    ],
-    "notes": [
-      "减仓比例基于当前持仓市值",
-      "累计减仓总额不超过总仓位的40%（永远保留至少60%底仓）",
-      "减仓所得现金保留账户，用于后续资金回流"
     ]
   },
-
-  "reflow_rules": {
-    "enabled": true,
-    "description": "当发生过减仓后，后续VIX回升到指定阈值时，买入回补",
-    "execution_timing": "回流买入在双周周二收盘执行，与当期定投一同下单",
-    "tiers": [
-      {
-        "vix_threshold": 25,
-        "ratio": 0.50,
-        "label": "半数回流",
-        "description": "VIX 重新 ≥ 25：买回减仓资金的50%"
-      },
-      {
-        "vix_threshold": 30,
-        "ratio": 0.50,
-        "label": "全部回流",
-        "description": "VIX 重新 ≥ 30：买回剩余50%"
-      }
-    ],
-    "notes": [
-      "回流金额不占用当期买入的封顶额度",
-      "极端风控减仓的5%资金在后续VIX ≥ 30时与常规回流合并买回"
-    ]
-  },
-
-  "emergency_buy": {
-    "enabled": true,
-    "description": "应急补仓（可选规则，保留但不强制执行）",
-    "trigger_vix": 32,
-    "trigger_type": "intraday",
-    "amount": 1500,
-    "max_per_month": 1,
-    "notes": [
-      "单周内任意交易日盘中VIX ≥ 32触发",
-      "本周内额外买入1500元（不受双周限制）",
-      "每月最多触发1次，且不与主定投冲突"
-    ]
-  },
-
   "initial_capital": 100000,
   "currency": "CNY",
   "execution_frequency": {
     "type": "biweekly",
     "day_of_week": "Tuesday",
     "anchor_date": "2026-03-24",
-    "description": "每双周周二国内白天执行（参考美国周一的VIX收盘价）",
-    "notes": "如遇节假日顺延至下一个交易日"
+    "description": "每双周周二国内交易时段执行，参考美国上一交易日VIX收盘值",
+    "notes": "如遇A股节假日，顺延至下一个A股交易日"
   },
-
   "execution_notes": [
-    "操作频率：每双周周二国内白天执行（参考美国周一收盘VIX）",
-    "禁止行为：盘中操作、追涨杀跌、主观干预",
-    "买入计算：基础档位 → 趋势修正（×0.7或×1.3） → 封顶（≥30时≤6000） → 风控检查",
-    "卖出判断：连续2期VIX达标才减仓，累计≤40%",
-    "回流：VIX≥25和≥30时按比例买回",
-    "应急补仓：VIX≥32可加1500，月限1次（可选）",
+    "每个定投日都买入，不因低VIX暂停",
+    "VIX越高买入金额越大，单期最高10000元",
+    "不使用趋势倍率，不因VIX高低主动卖出",
+    "低波动期少于每月10000元预算的部分留作恐慌期储备",
     "只针对513110这一只场内ETF",
-    "每次交易按当日收盘价执行"
+    "实盘使用限价单，避免在明显溢价时追价"
   ]
 }

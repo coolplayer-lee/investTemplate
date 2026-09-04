@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "strategy_version": "V2.1",
+  "signal_date": "2026-09-04",
+  "generated_at": "2026-09-04T14:31:52+08:00",
+  "vix": 15.42,
+  "vix_market_date": "2026-09-03",
+  "vix_source": "本地历史状态（自动数据获取失败）",
+  "data_status": "stale",
+  "business_day_age": 1,
+  "tier": "正常定投",
+  "scheduled_trade_day": false,
+  "action_code": "HOLD",
+  "action_text": "今天不是定投日，无需操作",
+  "action_amount": 0,
+  "reference_amount": 5000,
+  "next_trade_date": "2026-09-08",
+  "tone": "normal",
+  "note": "参考美国上一交易日VIX收盘值；实盘下单前检查513110溢价并使用限价单。"
+}
