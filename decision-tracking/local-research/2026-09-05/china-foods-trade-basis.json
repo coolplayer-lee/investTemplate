@@ -1,0 +1,18 @@
+{
+  "date": "2026-09-05",
+  "price_as_of": "2026-09-04",
+  "mode": "reference_price_simulation_not_market_fill",
+  "target_weight": 0.1,
+  "lot_size": 2000,
+  "shares": 10000,
+  "price_hkd": 4.03,
+  "amount_hkd": 40300.0,
+  "sizing_nav_hkd": 433432.2161467461,
+  "actual_weight": 0.09297878306848267,
+  "cash_after_hkd": 57187.0,
+  "fees_and_slippage": 0,
+  "fees_note": "excluded; returns gross",
+  "ledger": "decision-tracking/simulation_trades.csv",
+  "decision_report": "analysis-reports/中国食品_00506_投资分析报告.md#九本次模拟建仓决策2026-09-05用户授权",
+  "legacy_currency_note": "当前市值将汇贤CNY报价按1HKD=0.8559CNY换算；历史账本现金未进行历史汇率重建，组合累计收益只作旧账参考。"
+}

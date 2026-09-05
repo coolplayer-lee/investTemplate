@@ -1,18 +1,40 @@
 {
   "meta": {
-    "template_version": "V5.5.12",
-    "engine_version": "V3.1",
-    "generated_at": "2026-09-04 12:49:24",
-    "latest_trade_date": "2026-09-04"
+    "template_version": "V5.5.24",
+    "engine_version": "V4.0",
+    "generated_at": "2026-09-05 16:56:36",
+    "latest_trade_date": "2026-09-05",
+    "quote_as_of": "2026-09-04",
+    "execution_basis": "reference_price_simulation",
+    "fees_included": false,
+    "fx_rate_hkd_cny": 0.8559,
+    "fx_as_of": "2026-09-04"
   },
   "portfolio": {
     "initial_capital": 500000.0,
-    "cash": 97487.0,
-    "market_value": 321845.0,
-    "net_value": 419332.0,
-    "total_return_pct": -16.1336,
-    "position_ratio_pct": 64.369,
+    "cash": 57187.0,
+    "market_value": 376245.22,
+    "net_value": 433432.22,
+    "total_return_pct": -13.3136,
+    "position_ratio_pct": 86.806,
     "positions": [
+      {
+        "name": "中国食品",
+        "code": "00506",
+        "ticker": "0506.HK",
+        "shares": 10000,
+        "avg_cost": 4.03,
+        "close": 4.03,
+        "change_pct": 1.5113,
+        "market_value": 40300.0,
+        "unrealized": 0.0,
+        "sell_trigger": 5.31,
+        "weight_pct": 9.2979,
+        "status": "9月4日参考价",
+        "quote_currency": "HKD",
+        "base_currency": "HKD",
+        "quote_to_base_rate": 1
+      },
       {
         "name": "天津发展",
         "code": "00882",
@@ -24,8 +46,11 @@
         "market_value": 84600.0,
         "unrealized": -17400.0,
         "sell_trigger": 4.5,
-        "weight_pct": 20.1749,
-        "status": "实时"
+        "weight_pct": 19.5186,
+        "status": "9月4日参考价",
+        "quote_currency": "HKD",
+        "base_currency": "HKD",
+        "quote_to_base_rate": 1
       },
       {
         "name": "京投交通科技",
@@ -38,8 +63,11 @@
         "market_value": 78100.0,
         "unrealized": -25552.9,
         "sell_trigger": 0.6,
-        "weight_pct": 18.6249,
-        "status": "实时"
+        "weight_pct": 18.019,
+        "status": "9月4日参考价",
+        "quote_currency": "HKD",
+        "base_currency": "HKD",
+        "quote_to_base_rate": 1
       },
       {
         "name": "华润医药",
@@ -52,8 +80,11 @@
         "market_value": 75395.0,
         "unrealized": -13465.0,
         "sell_trigger": 9.0,
-        "weight_pct": 17.9798,
-        "status": "实时"
+        "weight_pct": 17.3949,
+        "status": "9月4日参考价",
+        "quote_currency": "HKD",
+        "base_currency": "HKD",
+        "quote_to_base_rate": 1
       },
       {
         "name": "汇贤产业信托",
@@ -63,15 +94,31 @@
         "avg_cost": 0.432,
         "close": 0.335,
         "change_pct": 0.0,
-        "market_value": 83750.0,
-        "unrealized": -24250.0,
+        "market_value": 97850.22,
+        "unrealized": -28332.75,
         "sell_trigger": 1.0,
-        "weight_pct": 19.9722,
-        "status": "实时"
+        "weight_pct": 22.5757,
+        "status": "9月4日参考价",
+        "quote_currency": "CNY",
+        "base_currency": "HKD",
+        "quote_to_base_rate": 1.168360789811894
       }
-    ]
+    ],
+    "currency": "HKD",
+    "valuation_note": "当前市值将汇贤CNY报价按1HKD=0.8559CNY换算；历史账本现金未进行历史汇率重建，组合累计收益只作旧账参考。"
   },
-  "today_actions": [],
+  "today_actions": [
+    {
+      "ticker": "0506.HK",
+      "name": "中国食品",
+      "action": "BUY_OPEN",
+      "price": 4.03,
+      "shares": 10000,
+      "amount": 40300.0,
+      "reason": "用户授权模拟建仓，目标为组合当前净值10%，整手向下取整；2026-09-05休市按2026-09-04参考价4.03港元记账，非真实市场成交，费用/滑点未计。估值修复：TTM PE10.64倍低于可比样本，业务盈利与合并净现金支持；12—14倍为主观研究假设。14倍对应约5.31港元全数退出；盈利/分红及治理证伪见报告第九节。",
+      "source": "USER_AUTHORIZED_REFERENCE_SIMULATION"
+    }
+  ],
   "recent_actions": [
     {
       "date": "2026-03-26",
@@ -152,9 +199,30 @@
       "shares": 1000,
       "amount": 4410.0,
       "reason": "加仓：当前价 4.410 低于成本价 5.278 的95%（5.014），触发回撤加仓策略"
+    },
+    {
+      "date": "2026-09-05",
+      "ticker": "0506.HK",
+      "name": "中国食品",
+      "action": "BUY_OPEN",
+      "price": 4.03,
+      "shares": 10000,
+      "amount": 40300.0,
+      "reason": "用户授权模拟建仓，目标为组合当前净值10%，整手向下取整；2026-09-05休市按2026-09-04参考价4.03港元记账，非真实市场成交，费用/滑点未计。估值修复：TTM PE10.64倍低于可比样本，业务盈利与合并净现金支持；12—14倍为主观研究假设。14倍对应约5.31港元全数退出；盈利/分红及治理证伪见报告第九节。"
     }
   ],
   "grouped_trades": {
+    "2026-09-05": [
+      {
+        "ticker": "0506.HK",
+        "name": "中国食品",
+        "action": "BUY_OPEN",
+        "price": 4.03,
+        "shares": 10000,
+        "amount": 40300.0,
+        "reason": "用户授权模拟建仓，目标为组合当前净值10%，整手向下取整；2026-09-05休市按2026-09-04参考价4.03港元记账，非真实市场成交，费用/滑点未计。估值修复：TTM PE10.64倍低于可比样本，业务盈利与合并净现金支持；12—14倍为主观研究假设。14倍对应约5.31港元全数退出；盈利/分红及治理证伪见报告第九节。"
+      }
+    ],
     "2026-09-02": [
       {
         "ticker": "3320.HK",
@@ -237,5 +305,9 @@
         "reason": "🐢🍊低估：剔除净现金PE 3.6倍，PB 0.63倍，净现金200亿，央企医药平台（卫星仓位）"
       }
     ]
+  },
+  "ai_summary": {
+    "ai_decisions_today": 0,
+    "rule_decisions_today": 0
   }
 }

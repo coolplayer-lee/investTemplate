@@ -2,8 +2,8 @@
   "template_version": "V5.5.22",
   "engine_version": "V3.1",
   "initial_capital": 500000.0,
-  "cash": 97487.0,
-  "last_trade_date": "2026-09-04",
+  "cash": 57187.0,
+  "last_trade_date": "2026-09-05",
   "positions": {
     "1522.HK": {
       "name": "京投交通科技",
@@ -219,12 +219,21 @@
       "name": "中国食品",
       "code": "00506",
       "ticker": "0506.HK",
-      "shares": 0,
-      "avg_cost": 0.0,
-      "sell_trigger": 0.0,
+      "shares": 10000,
+      "avg_cost": 4.03,
+      "sell_trigger": 5.31,
       "target_buy": null,
-      "lot_size": 1000,
-      "realized_pnl": 0.0
+      "lot_size": 2000,
+      "realized_pnl": 0.0,
+      "position_type": "核心",
+      "target_weight": 0.1,
+      "decision_id": "00506-20260905-rerating",
+      "execution_basis": "reference_price_simulation",
+      "price_as_of": "2026-09-04",
+      "fee_model": "zero_fees_and_slippage_not_net_return",
+      "buy_reason": "用户授权模拟建仓，目标为组合当前净值10%，整手向下取整；2026-09-05休市按2026-09-04参考价4.03港元记账，非真实市场成交，费用/滑点未计。估值修复：TTM PE10.64倍低于可比样本，业务盈利与合并净现金支持；12—14倍为主观研究假设。14倍对应约5.31港元全数退出；盈利/分红及治理证伪见报告第九节。",
+      "sell_reason": "14倍TTM估值修复目标；冻结本次参考卖点5.31港元，新财报后人工重算；基本面证伪见报告第九节。",
+      "risk_acceptance": "用户明确指定10%目标；同业口径及现金穿透疑点保留，非全部校验通过的声明。"
     },
     "1405.HK": {
       "name": "达势股份",

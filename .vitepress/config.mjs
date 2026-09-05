@@ -104,7 +104,7 @@ export default defineConfig({
               text: '🍽️ 消费食品（港股）',
               collapsed: true,
               items: [
-                { text: '中国食品_00506', link: '/analysis-reports/中国食品_00506_投资分析报告' },
+                { text: '中国食品_00506（估值修复研究）', link: '/analysis-reports/中国食品_00506_投资分析报告' },
                 { text: '蒙牛乳业_02319', link: '/analysis-reports/蒙牛乳业_02319_投资分析报告' },
                 { text: '海底捞_06862', link: '/analysis-reports/海底捞_06862_投资分析报告' },
                 { text: '达势股份_01405', link: '/analysis-reports/达势股份_01405_投资分析报告' }
