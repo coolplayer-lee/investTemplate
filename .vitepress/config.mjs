@@ -83,7 +83,7 @@ export default defineConfig({
               text: '🏢 物业服务（港股）',
               collapsed: true,
               items: [
-                { text: '保利物业_06049', link: '/analysis-reports/保利物业_06049_投资分析报告' },
+                { text: '保利物业_06049（2026中期复核）', link: '/analysis-reports/保利物业_06049_投资分析报告' },
                 { text: '中海物业_02669', link: '/analysis-reports/中海物业_02669_投资分析报告' },
                 { text: '金融街物业_01502', link: '/analysis-reports/金融街物业_01502_投资分析报告' },
                 { text: '滨江服务_03316', link: '/analysis-reports/滨江服务_03316_投资分析报告' },

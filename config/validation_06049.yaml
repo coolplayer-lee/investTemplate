@@ -4,18 +4,18 @@ schema_version: "V5.5.24.2"
 analysis_metadata:
   stock_code: "06049.HK"
   stock_name: "保利物业"
-  report_date: "2026-08-20"
+  report_date: "2026-09-05"
   analyst: "Codex"
   annual_report_year: 2025
-  annual_report_date: "2026-03-31"
+  annual_report_date: "2026-04-30"
   listing_board: "港股主板"
   workflow_status: "标准分析"
   shareholder_relationship: "公司养股东"
   explicit_high_risk_request: false
 
   data_freshness_control:
-    current_date: "2026-08-20"
-    data_age_days: 142
+    current_date: "2026-09-05"
+    data_age_days: 128
     max_allowed_age_days: 365
 
   report_type: "annual"
@@ -25,14 +25,14 @@ analysis_metadata:
   valuation_policy:
     primary_method: "PE"
     pe_applicable: true
-    price_as_of: "2026-08-20"
-    fx_as_of: "2026-08-20"
+    price_as_of: "2026-09-04"
+    fx_as_of: "2026-09-04"
     calculation_currency: "RMB"
-    share_price_to_calculation_currency_rate: 0.8568
-    fx_source: "Yahoo Finance HKDCNY=X daily chart API（1 HKD = 0.8568 RMB）"
-    ttm_period: ""
-    ttm_method: "NOT_AVAILABLE"
-    ttm_unavailable_reason: "截至2026-08-20，港交所尚未披露2026H1业绩；公司按半年披露，缺少“2025FY+2026H1-2025H1”中的2026H1组成项。"
+    share_price_to_calculation_currency_rate: 0.8559
+    fx_source: "https://cn.investing.com/currencies/hkd-cny-historical-data (2026-09-04 daily close)"
+    ttm_period: "2025-07-01/2026-06-30"
+    ttm_method: "ANNUAL_PLUS_INTERIM"
+    ttm_unavailable_reason: ""
 
   data_confidence_level: "S/B"
 
@@ -163,7 +163,31 @@ core_financial_data:
     report_period: "2025-12-31"
     confidence: "S"
 
-  ttm_components: []
+  ttm_components:
+    - role: latest_annual
+      period: 2025FY
+      value: 1549450000
+      operator: 1
+      unit: RMB
+      source: https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0430/2026043001632.pdf
+      page_number: 80
+      confidence: S
+    - role: current_interim
+      period: 2026H1
+      value: 933496000
+      operator: 1
+      unit: RMB
+      source: https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0825/2026082500219.pdf
+      page_number: 3
+      confidence: A
+    - role: prior_interim
+      period: 2025H1
+      value: 890612000
+      operator: -1
+      unit: RMB
+      source: https://www1.hkexnews.hk/listedco/listconews/sehk/2025/0925/2025092500520.pdf
+      page_number: 24
+      confidence: S
 
   non_recurring_items:
     asset_impairment: 50389000
@@ -204,19 +228,19 @@ core_financial_data:
 
   total_shares:
     value: 553333400
-    source: "2025_annual_report_note_27_page_144"
-    page_number: 144
+    source: "2026-08 securities monthly return https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0902/2026090201083_c.pdf"
+    page_number: 1
     confidence: "S"
 
   share_price:
-    value: 27.86
+    value: 28.76
     currency: "HKD"
-    date: "2026-08-20"
-    source: "Yahoo Finance 6049.HK daily chart API（收盘价）"
+    date: "2026-09-04"
+    source: "https://cn.investing.com/equities/poly-property-development-co-ltd-historical-data"
 
   market_cap:
     calculation: "total_shares * share_price * share_price_to_calculation_currency_rate"
-    value: 13208316151.3632
+    value: 13620680121.045599
     unit: "RMB"
     display_unit: "亿元人民币"
 
@@ -225,7 +249,7 @@ core_financial_data:
       formula: "cash_and_cash_equivalents - lease_liabilities"
       value: 10608278000
       display_value: "106.08亿元人民币"
-      market_cap_ratio: 0.8031514296
+      market_cap_ratio: 0.7788361451649486
       notes: "现金及现金等价物107.09927亿元减租赁负债1.01649亿元；排除原始期限24-36个月的定期存款，更接近随时可动用口径。"
       confidence: "A"
 
@@ -233,7 +257,7 @@ core_financial_data:
       formula: "cash_and_cash_equivalents - poly_finance_deposits - lease_liabilities"
       value: 8638983000
       display_value: "86.39亿元人民币"
-      market_cap_ratio: 0.6540563461
+      market_cap_ratio: 0.6342548920631156
       notes: "在即时净现金基础上进一步剔除保利财务存款19.69295亿元的审慎口径。"
       confidence: "A"
 
@@ -241,7 +265,7 @@ core_financial_data:
       formula: "cash_and_bank_balances - restricted_cash - interest_bearing_debt.total"
       value: 12784251000
       display_value: "127.84亿元人民币"
-      market_cap_ratio: 0.9678940793
+      market_cap_ratio: 0.9385912367361734
       notes: "广义净现金口径，包含原始期限24-36个月的定期存款本金约21.76亿元，不等于全部随时可动用。"
       confidence: "A"
 
@@ -253,77 +277,81 @@ core_financial_data:
 
     maintenance_fcf:
       formula: "operating_cash_flow - maintenance_capex_range"
-      low_value: 1732154000
-      high_value: 1782154000
-      estimate_basis: "维护性资本开支估计0.45-0.95亿元；下限参考2025年现金流量表实际资本开支0.487亿元，上限参考2025年PPE折旧0.941亿元。"
+      low_value: 1778460000
+      high_value: 1827154000
+      estimate_basis: "公司未披露维护/扩张拆分；2025已付资本开支0.48694亿元中维护比例0%-100%的敏感性边界，并非可持续现金预测。决策仅使用实际报告FCF。"
       confidence: "B"
 
     market_cap_ex_cash:
       formula: "market_cap - net_cash"
-      value: 424065151.3632
-      display_value: "4.24亿元人民币（仅作辅助，不视全部现金为可分配）"
+      value: 836429121.045599
+      display_value: "8.36429亿元人民币"
 
     fcf_yield:
       formula: "fcf / market_cap"
-      value: 0.1346469890
-      display_value: "13.46%"
+      value: 0.13057057240864678
+      display_value: "13.06%"
 
     fcf_multiple_market:
       formula: "market_cap / fcf"
-      value: 7.4268277900
-      display_value: "7.43倍"
+      value: 7.65869354444047
+      display_value: "7.66倍"
 
     multi_period_fcf:
-      method: "TWO_YEAR_AVERAGE"
+      method: "THREE_YEAR_AVERAGE"
       periods:
-        - period: "2024FY"
+        - period: 2023FY
+          value: 2339351000
+          source: https://www1.hkexnews.hk/listedco/listconews/sehk/2025/0428/2025042802400.pdf
+          page_number: 86
+        - period: 2024FY
           value: 1396248000
-          source: "2025_annual_report_comparative_cash_flow_statement_page_84"
+          source: 2025_annual_report_comparative_cash_flow_statement_page_84
           page_number: 84
-        - period: "2025FY"
+        - period: 2025FY
           value: 1778460000
-          source: "2025_annual_report_cash_flow_statement_page_84"
+          source: 2025_annual_report_cash_flow_statement_page_84
           page_number: 84
-      average_value: 1587354000
-      market_cap_yield: 0.1201783772
+      average_value: 1838019666.6666667
+      market_cap_yield: 0.1349433104905462
       unavailable_reason: ""
       confidence: "A"
 
     dividend_yield:
       formula: "dividend_per_share_for_yield / share_price"
-      value: 0.0576834171
-      display_value: "5.77%"
+      value: 0.05587830319888734
+      display_value: "5.59%"
       notes: "股息是FCF的分配组成，不与FCF收益率相加。"
 
     fcf_multiple_ex_cash:
       formula: "market_cap_ex_cash / fcf"
-      value: 0.2384451443
-      display_value: "0.24倍（仅作辅助）"
+      value: 0.47031089878074234
+      display_value: "0.47倍"
 
     pe_ratio:
       formula: "market_cap / net_profit_attributable"
-      value: 8.5245191206
-      display_value: "8.52倍（2025静态）"
+      value: 8.790654826580786
+      display_value: "8.79倍"
 
     static_pe:
       formula: "market_cap / net_profit_attributable"
-      value: 8.5245191206
-      display_value: "8.52倍"
+      value: 8.790654826580786
+      display_value: "8.79倍"
 
     ttm_net_profit:
       formula: "sum(ttm_components.operator * ttm_components.value)"
-      value: null
-      display_value: "TTM不可可靠计算"
+      value: 1592334000
+      display_value: "15.92334亿元人民币"
 
     ttm_pe:
       formula: "market_cap / ttm_net_profit"
-      value: null
-      display_value: "TTM不可可靠计算"
+      value: 8.553908992111955
+      display_value: "8.55倍"
 
     pb_ratio:
       formula: "market_cap / equity_attributable_to_owners"
-      value: 1.2515727103
-      display_value: "1.25倍"
+      value: 1.2906468424599333
+      display_value: "1.29倍"
 
     debt_to_asset_ratio:
       formula: "total_liabilities / total_assets"
@@ -332,8 +360,42 @@ core_financial_data:
 
     cash_to_market_cap_ratio:
       formula: "net_cash / market_cap"
-      value: 0.9678940790
-      display_value: "96.79%"
+      value: 0.9385912367361734
+      display_value: "93.86%"
+
+  latest_interim_supplement:
+    period: '2026-06-30'
+    source: https://www1.hkexnews.hk/listedco/listconews/sehk/2026/0825/2026082500219.pdf
+    confidence: A
+    unit: RMB
+    revenue: 8829177000
+    net_profit_attributable: 933496000
+    cash_and_cash_equivalents: 10131516000
+    time_deposits_carrying_amount: 2296470000
+    time_deposits_principal_rounded: 2205900000
+    lease_liabilities: 89383000
+    current_liabilities: 7850795000
+    noncurrent_liabilities: 49679000
+    total_liabilities: 7900474000
+    contract_liabilities: 2077299000
+    cash_less_all_liabilities: 2231042000
+    cash_less_all_liabilities_to_market_cap_percent: 16.37981349
+    cash_less_liabilities_excluding_contract_liabilities: 4308341000
+    primary_cash_metric: cash_and_cash_equivalents_minus_interest_bearing_debt_including_leases
+    primary_net_cash: 10042133000
+    primary_net_cash_to_market_cap_percent: 73.72710401
+    primary_cash_metric_notes: 主展示约74%；排除单列定期存款，未扣应付及合同负债等经营负债，不等于银行活期或自由分配现金；现金时点2026-06-30，市值时点2026-09-04。
+    freely_available_bank_cash_after_liabilities: null
+    all_liabilities_cash_notes: 现金等价物减全部负债；合同负债主要靠服务履约，但全额加回未预留服务成本；关联存款和资金限制未核实，不视为自由现金，应付股息不重复扣减。
+    trade_and_bills_receivables_net: 4433191000
+    receivables_over_one_year_net: 518869000
+    related_trade_receivables_gross: 738032000
+    related_financial_institution_deposits: null
+    related_deposit_contract_cap: 2030000000
+    operating_cash_flow: null
+    capex: null
+    fcf: null
+    notes: 中期公告无现金流量表、无保利财务期末存款余额；不从现金变动倒推OCF，不将年度余额当最新余额。审慎现金仅展示遵守20.3亿元存款上限前提下的边界。
 
 historical_comparison:
   years:
@@ -475,7 +537,7 @@ validation_checklist:
   - id: "data_freshness"
     item: "数据时效性：确认使用最新完整年度年报，非中报/季报数据"
     checked: true
-    freshness_explanation: "2026H1截至报告日尚未披露，因此只补充披露状态，不伪造TTM。"
+    freshness_explanation: "2026H1利润已公告，TTM已更新；完整中期现金流和保利财务存款期末余额尚未披露，不能核实最新FCF。"
   - id: "shareholder_relationship"
     item: "股东关系：已完成资本市场养分测试并给出标签"
     checked: true
@@ -494,7 +556,7 @@ data_corrections:
 
 confidence_downgrade_reasons:
   - reason: "核心年度财务数据为S级；股价与汇率为外部市场数据，估值整体按B级行情置信度展示。"
-  - reason: "2026H1未披露，TTM PE明确留空；维护性资本开支为B级估计区间。"
+  - reason: "2026H1利润已公告，TTM已更新；完整中期现金流和保利财务存款期末余额尚未披露，不能核实最新FCF。"
 
 confirmation:
   i_confirm:
@@ -504,4 +566,15 @@ confirmation:
     - "与上期数据对比合理，异常变动已解释"
     - "了解数据错误将导致分析报告作废"
   analyst_signature: "Codex"
-  validation_date: "2026-08-20"
+  validation_date: "2026-09-05"
+research_decision:
+  as_of: '2026-09-06'
+  template_revision: 2026-09-05-r5
+  action: 可分批买入；已有仓位可持有，暂不直接配足10%
+  current_simulated_position_percent: 0
+  position_ceiling_percent: 10
+  current_new_allocation_percent: null
+  current_ordinary_position_ceiling_percent: 8
+  next_review: '2026-09-30'
+  reason: 低估值支持分批买入；回款预警和现金流缺失限制仓位与加仓，不单独推出零仓位；主要展示账面净现金73.73%，未扣经营负债；严格扣全部负债16.38%仅作对照，两者均非已核实自由现金。
+  not_executed: true
