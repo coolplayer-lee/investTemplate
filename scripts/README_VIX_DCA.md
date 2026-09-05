@@ -36,7 +36,7 @@ V2.1不依据VIX主动卖出。
 |------|------|
 | `scripts/auto_update_vix_dca.py` | 自动更新脚本 V2.1 |
 | `scripts/generate_vix_morning_signal.py` | 生成VIX数值与“今日怎么操作”卡片 |
-| `.github/workflows/vix_dca_morning_signal.yml` | 工作日08:30生成早盘提示，08:45失败补跑 |
+| `.github/workflows/vix_dca_morning_signal.yml` | 每天08:30生成提示（含周末），08:45失败补跑 |
 | `.github/workflows/vix_dca_daily_update.yml` | 每周二下午检查，仅双周定投日更新 |
 | `scripts/rebuild_vix_dca.py` | 按V2.1和2026-09-01锚点重建历史 |
 | `decision-tracking/vix_dca_strategy/strategy_config.json` | 策略配置（档位、修正、风控参数） |
@@ -111,7 +111,7 @@ python scripts/auto_update_vix_dca.py --force
 4. 更新交易账本、状态、定投日快照和收益曲线
 5. 更新网页文档并同步到 `public/vix_strategy/`
 
-非定投日不写入交易、状态或收益历史；早盘“今日操作”卡片仍在工作日更新。
+非定投日不写入交易、状态或收益历史；“今日操作”卡片每天更新，周末显示休市。页面按北京时间检查日期，更新延迟或跨日打开时，周末显示休市，工作日显示提示待更新；保留真实行情日期，过期买入提示不再作为今日操作展示。
 
 ### 定投日额外操作
 

@@ -11,7 +11,7 @@
 
 <iframe src="/vix_strategy/today_signal.html" title="VIX今日操作提示" width="100%" height="285" style="border:0;overflow:hidden" loading="eager"></iframe>
 
-> 每个工作日北京时间08:30自动更新操作提示；交易与收益历史只在双周定投日下午更新。
+> 每天北京时间08:30自动更新操作提示，周末显示休市；页面按北京时间检查提示日期，过期提示不会作为今日操作展示。交易与收益历史只在双周定投日下午更新。
 
 ## 当前收益（2026-09-01）
 

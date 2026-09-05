@@ -8,7 +8,7 @@ import io
 import json
 import shutil
 import urllib.request
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 try:
@@ -32,6 +32,7 @@ CONFIG_FILE = STRATEGY_DIR / "strategy_config.json"
 STATE_FILE = STRATEGY_DIR / "state.json"
 SIGNAL_FILE = STRATEGY_DIR / "today_signal.json"
 SIGNAL_HTML_FILE = STRATEGY_DIR / "today_signal.html"
+BEIJING_TZ = timezone(timedelta(hours=8))
 
 
 def load_json(path):
@@ -99,7 +100,8 @@ def resolve_next_trade_date(state):
 
 def build_signal(signal_date, snapshot, state, config):
     next_trade_date = resolve_next_trade_date(state)
-    scheduled_today = next_trade_date == signal_date.isoformat()
+    weekend = signal_date.weekday() >= 5
+    scheduled_today = not weekend and next_trade_date == signal_date.isoformat()
 
     if snapshot:
         vix = float(snapshot["value"])
@@ -120,7 +122,12 @@ def build_signal(signal_date, snapshot, state, config):
         source = "本地历史状态（自动数据获取失败）"
         amount, tier_label = get_base_buy_amount(vix, config) if vix > 0 else (0, "数据缺失")
 
-    if data_status != "fresh" and scheduled_today:
+    if weekend:
+        action_code = "HOLD"
+        action_text = "今日周末休市，无需操作"
+        action_amount = 0
+        tone = "normal"
+    elif data_status != "fresh" and scheduled_today:
         action_code = "VERIFY_DATA"
         action_text = "VIX数据需要核对，暂不操作"
         action_amount = 0
@@ -195,7 +202,7 @@ def render_html(signal):
 <body>
 <section class="card">
   <div class="top">
-    <div><h2>VIX今日操作 · {esc(signal['signal_date'])}</h2><p class="action">{esc(signal['action_text'])}</p></div>
+    <div><h2 id="signal-title">VIX今日操作 · {esc(signal['signal_date'])}</h2><p class="action">{esc(signal['action_text'])}</p></div>
     <span class="badge">{esc(status_text)}</span>
   </div>
   <div class="grid">
@@ -205,7 +212,31 @@ def render_html(signal):
     <div class="item"><div class="label">下次定投</div><div class="value">{esc(next_trade)}</div></div>
   </div>
   <p class="foot">VIX数据日：{esc(signal['vix_market_date'] or '未知')} · 来源：{esc(signal['vix_source'])}<br>{esc(signal['note'])}</p>
+  <p class="foot" id="signal-freshness">提示生成日：{esc(signal['signal_date'])}（北京时间）</p>
 </section>
+<script>
+const signalDate = {json.dumps(signal['signal_date'])};
+function refreshDisplay() {{
+  const parts = new Intl.DateTimeFormat('en-US', {{
+    timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit'
+  }}).formatToParts(new Date());
+  const fields = Object.fromEntries(parts.map(part => [part.type, part.value]));
+  const today = `${{fields.year}}-${{fields.month}}-${{fields.day}}`;
+  if (today === signalDate) return;
+  const weekend = [0, 6].includes(new Date(today + 'T00:00:00Z').getUTCDay());
+  document.getElementById('signal-title').textContent = 'VIX今日操作 · ' + today;
+  document.querySelector('.action').textContent = weekend
+    ? '今日周末休市，无需操作'
+    : '今日操作提示尚未更新，请等待更新后核对';
+  document.querySelector('.badge').textContent = weekend ? '周末休市' : '提示待更新';
+  document.getElementById('signal-freshness').textContent =
+    '上次提示生成日：' + signalDate + '（北京时间）；以上行情与档位仅供历史参考。';
+  document.querySelector('.action').style.color = '#c2410c';
+}}
+refreshDisplay();
+setInterval(refreshDisplay, 60000);
+document.addEventListener('visibilitychange', refreshDisplay);
+</script>
 </body>
 </html>
 """
@@ -213,8 +244,8 @@ def render_html(signal):
 
 def save_outputs(signal):
     PUBLIC_DIR.mkdir(parents=True, exist_ok=True)
-    SIGNAL_FILE.write_text(json.dumps(signal, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    SIGNAL_HTML_FILE.write_text(render_html(signal), encoding="utf-8")
+    SIGNAL_FILE.write_text(json.dumps(signal, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
+    SIGNAL_HTML_FILE.write_text(render_html(signal), encoding="utf-8", newline="\n")
     shutil.copy2(SIGNAL_FILE, PUBLIC_DIR / SIGNAL_FILE.name)
     shutil.copy2(SIGNAL_HTML_FILE, PUBLIC_DIR / SIGNAL_HTML_FILE.name)
 
@@ -228,7 +259,7 @@ def main():
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
-    signal_date = date.fromisoformat(args.date) if args.date else date.today()
+    signal_date = date.fromisoformat(args.date) if args.date else datetime.now(BEIJING_TZ).date()
     if args.vix is not None:
         snapshot = {
             "value": args.vix,

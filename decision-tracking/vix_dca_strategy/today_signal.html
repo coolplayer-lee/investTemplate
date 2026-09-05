@@ -17,7 +17,7 @@
 <body>
 <section class="card">
   <div class="top">
-    <div><h2>VIX今日操作 · 2026-09-04</h2><p class="action">今天不是定投日，无需操作</p></div>
+    <div><h2 id="signal-title">VIX今日操作 · 2026-09-05</h2><p class="action">今日周末休市，无需操作</p></div>
     <span class="badge">数据正常</span>
   </div>
   <div class="grid">
@@ -27,6 +27,30 @@
     <div class="item"><div class="label">下次定投</div><div class="value">2026-09-15</div></div>
   </div>
   <p class="foot">VIX数据日：2026-09-03 · 来源：Cboe VIX历史收盘数据<br>参考美国上一交易日VIX收盘值；实盘下单前检查513110溢价并使用限价单。</p>
+  <p class="foot" id="signal-freshness">提示生成日：2026-09-05（北京时间）</p>
 </section>
+<script>
+const signalDate = "2026-09-05";
+function refreshDisplay() {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit'
+  }).formatToParts(new Date());
+  const fields = Object.fromEntries(parts.map(part => [part.type, part.value]));
+  const today = `${fields.year}-${fields.month}-${fields.day}`;
+  if (today === signalDate) return;
+  const weekend = [0, 6].includes(new Date(today + 'T00:00:00Z').getUTCDay());
+  document.getElementById('signal-title').textContent = 'VIX今日操作 · ' + today;
+  document.querySelector('.action').textContent = weekend
+    ? '今日周末休市，无需操作'
+    : '今日操作提示尚未更新，请等待更新后核对';
+  document.querySelector('.badge').textContent = weekend ? '周末休市' : '提示待更新';
+  document.getElementById('signal-freshness').textContent =
+    '上次提示生成日：' + signalDate + '（北京时间）；以上行情与档位仅供历史参考。';
+  document.querySelector('.action').style.color = '#c2410c';
+}
+refreshDisplay();
+setInterval(refreshDisplay, 60000);
+document.addEventListener('visibilitychange', refreshDisplay);
+</script>
 </body>
 </html>
