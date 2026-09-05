@@ -1,8 +1,8 @@
 template:
   id: "V5.5.24"
-  name: "估值修复、股东回报与决策反馈版"
-  updated: "2026-09-05"
-  revision: "2026-09-05-r5"
+  name: "股东回报、FCF收益率与现金可用性版"
+  updated: "2026-08-20"
+  revision: "2026-08-25-r4"
   data_schema_version: "V5.5.24.2"
   entrypoint: "analysis-template.md"
   chapter_dir: "template/"
@@ -11,8 +11,6 @@ template:
 
 policy:
   valuation_source_of_truth: "template/06-估值与安全边际.md"
-  rerating_analysis_source: "template/06-估值与安全边际.md#rerating-analysis"
-  decision_feedback_source: "template/07-决策流程与持仓管理.md#decision-feedback"
   report_contract: "template/00-报告输出契约.md"
   data_validation_schema: "config/data_validation_template.yaml"
   data_validation_script: "scripts/validate_data.py"
