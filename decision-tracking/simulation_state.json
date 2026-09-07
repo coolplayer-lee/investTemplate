@@ -3,7 +3,7 @@
   "engine_version": "V3.1",
   "initial_capital": 500000.0,
   "cash": 57187.0,
-  "last_trade_date": "2026-09-05",
+  "last_trade_date": "2026-09-07",
   "positions": {
     "1522.HK": {
       "name": "京投交通科技",
@@ -223,7 +223,7 @@
       "avg_cost": 4.03,
       "sell_trigger": 5.31,
       "target_buy": null,
-      "lot_size": 2000,
+      "lot_size": 1000,
       "realized_pnl": 0.0,
       "position_type": "核心",
       "target_weight": 0.1,
