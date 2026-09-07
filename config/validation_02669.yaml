@@ -150,9 +150,17 @@ core_financial_data:
     report_period: '2025-12-31'
     confidence: S
   dividend_per_share_for_yield:
-    value: 0.2
+    value: 0.19
     currency: HKD
-    period: TTM/2025FY已批准
+    period: 2025FY普通股息
+    source: 2025_annual_report_dividend_note_and_distribution_announcement
+    page_number: 股息附注
+    confidence: S
+    notes: 2025FY普通股息0.19HKD/股（中期0.09+末期0.10）；特别股息0.01HKD/股单列，不用于可持续税后股息率。
+  special_dividend_per_share:
+    value: 0.01
+    currency: HKD
+    period: 2025FY特别股息
     source: 2025_annual_report_dividend_note_and_distribution_announcement
     page_number: 股息附注
     confidence: S
@@ -201,7 +209,8 @@ core_financial_data:
       average_value: 1115085000.0
       market_cap_yield: 0.11654697195994464
     dividend_yield:
-      value: 0.05882352941176471
+      value: 0.05588235294117647
+      notes: 普通年度股息0.19HKD/股÷配置文件基准股价3.40HKD；税前口径，不含特别股息。报告正文按2026-08-21股价3.62HKD另算。
     static_pe:
       value: 7.00017152867552
     ttm_net_profit:
@@ -267,4 +276,4 @@ confirmation:
   - 计算过程已复核
   - 未把广义现金冒充随时可用现金
   analyst_signature: Codex
-  validation_date: '2026-08-20'
+  validation_date: '2026-09-06'

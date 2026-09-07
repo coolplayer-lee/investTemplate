@@ -16,6 +16,10 @@ ROOT = Path(__file__).resolve().parents[1]
 REPORT_DIR = ROOT / "analysis-reports"
 VERSION_FILE = ROOT / "config" / "template-version.yaml"
 VERSION_PATTERN = re.compile(r"V5\.5\.\d+")
+R6_REVISION_PATTERN = re.compile(
+    r"(?:2026-09-06-r6|V5\.5\.24-r6)",
+    re.IGNORECASE,
+)
 
 
 @dataclass
@@ -47,6 +51,17 @@ REQUIRED_PATTERNS = {
     "现金可动用性": re.compile(r"随时可动用|立即动用|即时可用|现金可动用性"),
 }
 
+# These checks only establish that an r6 report has named sections/fields.
+# Presence of a label does not validate the rate, sustainability, or decision.
+R6_REQUIRED_TEXT_PATTERNS = {
+    "税后股息率": re.compile(r"税后股息率"),
+    "普通股息": re.compile(r"普通股息"),
+    "特别股息": re.compile(r"特别股息"),
+    "分红覆盖": re.compile(r"分红覆盖"),
+    "两年不涨": re.compile(r"两年不涨"),
+    "分红准入": re.compile(r"分红准入"),
+}
+
 
 def load_current_version() -> str:
     data = yaml.safe_load(VERSION_FILE.read_text(encoding="utf-8"))
@@ -71,6 +86,14 @@ def audit_report(path: Path, current_version: str) -> ReportAudit:
     for label, pattern in REQUIRED_PATTERNS.items():
         if not pattern.search(text):
             audit.errors.append(f"缺少{label}")
+
+    # r6 is opt-in by explicit revision marker so existing reports can be
+    # migrated on their normal review cycle.  This is a textual presence
+    # check only; numerical and analytical quality require human/data checks.
+    if audit.current and R6_REVISION_PATTERN.search(text):
+        for label, pattern in R6_REQUIRED_TEXT_PATTERNS.items():
+            if not pattern.search(text):
+                audit.errors.append(f"缺少{label}")
     return audit
 
 

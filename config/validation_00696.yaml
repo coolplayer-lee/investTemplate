@@ -2,7 +2,7 @@ schema_version: V5.5.24.2
 analysis_metadata:
   stock_code: 00696.HK
   stock_name: 中国民航信息网络
-  report_date: '2026-08-25'
+  report_date: '2026-09-06'
   analyst: Codex
   annual_report_year: 2025
   annual_report_date: '2026-04-22'
@@ -19,8 +19,8 @@ analysis_metadata:
   valuation_policy:
     primary_method: PE
     pe_applicable: true
-    fcf_applicable: true
-    fcf_unavailable_reason: ''
+    fcf_applicable: false
+    fcf_unavailable_reason: 最新中报未披露完整现金流量表及实际CAPEX；仅保留FY2025已核实年度FCF作为历史基线，不计算2026H1或TTM FCF。
     price_as_of: '2026-08-24'
     fx_as_of: '2026-08-25'
     calculation_currency: RMB
@@ -29,11 +29,11 @@ analysis_metadata:
     ttm_period: '2025-07-01/2026-06-30'
     ttm_method: ANNUAL_PLUS_INTERIM
     ttm_unavailable_reason: ''
-  data_confidence_level: B
+  data_confidence_level: A/S
   validation_checks:
   - check: 使用最新完整年度年报FY2025（静态PE与跨期FCF基准，S级）
     checked: true
-  - check: 2026中报（8-24业绩公布）用于TTM与最新趋势，置信度降级B级
+  - check: 2026中报（8-24业绩公布）用于TTM与最新趋势，原始公告数据按A级记录
     checked: true
   - check: 中报为未经审计业绩公告，核心数据均来自公告原文
     checked: true
@@ -190,23 +190,32 @@ core_financial_data:
     total: 0
     notes: 2026年6月收到重点软件企业退税款（减少所得税费用、提高净利率），公告未单独披露非经常性损益金额，未作拆分
   operating_cash_flow:
-    value: 2435700000
+    value: null
     unit: RMB
     display_unit: 亿元
     source: 2026_interim_report_mda_cash_flow
     page_number: 管理层讨论「变现能力与资本结构」（公告第26页）
     report_period: '2026-06-30'
-    confidence: B
+    confidence: A
     verification_checked: true
-    notes: 经营现金流净额24.36亿元，同比+85.3%（2025H1为13.15亿元），主要受重点软件企业退税款及应收账款回收推动
+    notes: 最新中报管理层讨论披露经营现金流净额24.36亿元，同比+85.3%；由于完整现金流量表及实际CAPEX未披露，不将该半年数用于FCF计算。原始披露为A级。
   capex:
-    value: 387432803
+    value: null
     unit: RMB
-    source: 2026_interim_report_estimate_capex
-    page_number: 中报业绩公告未披露现金流量表；采用2025H1实际购建长期资产现金支出387,432,803元作B级估计，区间3.0-5.0亿元
+    source: 2026_interim_report_cash_flow_statement_unavailable
+    page_number: 中报业绩公告未披露完整现金流量表及实际CAPEX；2025H1实际CAPEX仅作历史对照，不代替本期
     report_period: '2026-06-30'
-    confidence: B
-    notes: B级估计值；实际值待2026中期报告披露后复核（预计2026年9月）
+    confidence: A
+    notes: 最新中报CAPEX不可可靠计算，保持value为null；不得以2025H1实际CAPEX估计2026H1。
+  annual_fcf_baseline:
+    report_period: '2025-12-31'
+    operating_cash_flow: 2924410000
+    capex: 843665479.58
+    fcf: 2080744520.42
+    unit: RMB
+    confidence: S
+    source: 2025_annual_report_cash_flow_statement
+    notes: 已核实FY2025年度基线；仅用于历史对照与报告展示，不填入最新中报FCF字段。
   dividends_paid:
     value: 807634000
     unit: RMB
@@ -255,32 +264,21 @@ core_financial_data:
       notes: 广义净现金=货币资金88.60亿-受限0-有息负债12.39亿；含三个月以上定存约0.30亿。另有银行结构性存款/理财60.20亿（90-186天、到期前不可赎回）于交易性金融资产科目，不计入广义净现金，单列披露
       confidence: B
     fcf:
-      value: 2048267197
-      display_value: 20.48亿元
-      notes: 报告口径FCF=经营现金流24.36亿-资本开支3.87亿（B级估计，区间3.0-5.0亿→FCF区间19.4-21.4亿）
+      value: null
+      display_value: 不可可靠计算
+      notes: 最新中报未披露完整现金流量表及实际CAPEX；不得使用估计值。
     fcf_yield:
-      value: 0.09791
-      notes: 20.48/209.20市值；CAPEX为B级估计，实际值以2026中期报告为准
+      value: null
+      notes: 最新中报FCF不可可靠计算；FY2025年度FCF基线另列于annual_fcf_baseline。
     fcf_multiple_market:
-      value: 10.213
-      notes: 市值/报告口径FCF
+      value: null
+      notes: 最新中报FCF不可可靠计算。
     fcf_multiple_ex_cash:
-      value: 6.493
-      notes: （市值209.20-广义净现金76.21）/报告口径FCF20.48；负值表示广义净现金超过市值，不代表可直接分走
+      value: null
+      notes: 最新中报FCF不可可靠计算。
     multi_period_fcf:
-      method: TWO_YEAR_AVERAGE
-      periods:
-      - period: 2024FY
-        value: 2172465493.4
-        unit: RMB
-        source: 2025_annual_report_cash_flow_statement
-      - period: 2025FY
-        value: 2080744520.42
-        unit: RMB
-        source: 2025_annual_report_cash_flow_statement
-      average_value: 2126605006.91
-      market_cap_yield: 0.10166
-      notes: 2024/2025两个完整年度报告口径FCF均值21.27亿元
+      method: NOT_AVAILABLE
+      unavailable_reason: 最新中报FCF不可可靠计算；本配置保留年度基线与历史年份，不在最新中报指标中合并伪精确TTM。
     dividend_yield:
       value: 0.03861
       notes: 0.32198港币/8.34港币；税前口径，不含港股通红利税
@@ -311,16 +309,15 @@ historical_comparison:
     fcf: 2080744520.42
   - year: 2026H1
     net_profit_attributable: 1543010000
-    fcf: 2048267197.0
-    notes: H1 FCF为B级估计（CAPEX未披露）
+    notes: 中报归母净利润已披露；完整现金流量表及CAPEX未披露，不填H1 FCF。
 cross_validation:
   interest_rate_check:
     interest_income: 0
     notes: 财务费用-30,256千元（利息收入50,831千-利息费用12,518千）；大额结构性存款/理财收益计入投资收益及公允价值变动，不做简单利息率交叉验证
   fcf_vs_profit_check:
-    fcf: 2048267197.0
+    fcf: null
     net_profit: 1560685000
-    notes: 报告口径FCF>归母净利润，因营运资金释放（应收账款-6.27亿）及退税款
+    notes: 最新中报FCF不可可靠计算；经营现金流24.36亿元及退税/应收回收仅作现金流背景，不与未披露CAPEX相减。
 validation_checklist:
 - id: timing
   item: 最新完整年度年报FY2025+最新中报2026H1
@@ -347,7 +344,7 @@ validation_checklist:
 - id: data_freshness
   item: 中报与年报披露状态已确认（2026中报8-24公告，FY2025年报4-22）
   checked: true
-  freshness_explanation: 使用2026-08-24发布的2026中期业绩公告补TTM与最新趋势；静态PE与跨期FCF仍以FY2025年报S级数据为基准；CAPEX未披露以B级估计
+  freshness_explanation: 使用2026-08-24发布的2026中期业绩公告补TTM与最新趋势；静态PE与历史年度FCF基线仍以FY2025年报S级数据为基准；2026H1 CAPEX未披露，最新中报FCF保持不可可靠计算
 - id: shareholder_relationship
   item: 股东关系已分类（相互供养）
   checked: true
@@ -355,8 +352,8 @@ validation_checklist:
   item: 历史价格锚已排除
   checked: true
 confidence_downgrade_reasons:
-- 中报为未经审计业绩公告，核心数据B级（年报S级数据仍用于静态PE与跨期FCF）
-- 资本开支未在中报披露，报告口径FCF为B级估计（区间3.0-5.0亿），待中期报告复核
+- 中报为未经审计业绩公告，原始公告核心数据A级（年报S级数据仍用于静态PE与历史年度FCF基线）
+- 资本开支未在中报披露，最新中报FCF不可可靠计算；不得用估计值填充
 - 股价与汇率为B级行情数据
 confirmation:
   i_confirm:
@@ -364,4 +361,4 @@ confirmation:
   - 计算过程已复核
   - 未把受限存款、结构性存款/理财冒充可随时动用现金
   analyst_signature: Codex
-  validation_date: '2026-08-25'
+  validation_date: '2026-09-06'

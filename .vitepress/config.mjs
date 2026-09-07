@@ -83,8 +83,8 @@ export default defineConfig({
               text: '🏢 物业服务（港股）',
               collapsed: true,
               items: [
-                { text: '保利物业_06049（2026中期复核）', link: '/analysis-reports/保利物业_06049_投资分析报告' },
-                { text: '中海物业_02669', link: '/analysis-reports/中海物业_02669_投资分析报告' },
+                { text: '保利物业_06049（分红与回款复核）', link: '/analysis-reports/保利物业_06049_投资分析报告' },
+                { text: '中海物业_02669（股息纠错）', link: '/analysis-reports/中海物业_02669_投资分析报告' },
                 { text: '金融街物业_01502', link: '/analysis-reports/金融街物业_01502_投资分析报告' },
                 { text: '滨江服务_03316', link: '/analysis-reports/滨江服务_03316_投资分析报告' },
                 { text: '绿城服务_02869', link: '/analysis-reports/绿城服务_02869_投资分析报告' }
@@ -104,7 +104,7 @@ export default defineConfig({
               text: '🍽️ 消费食品（港股）',
               collapsed: true,
               items: [
-                { text: '中国食品_00506（估值修复研究）', link: '/analysis-reports/中国食品_00506_投资分析报告' },
+                { text: '中国食品_00506（分红与估值修复）', link: '/analysis-reports/中国食品_00506_投资分析报告' },
                 { text: '蒙牛乳业_02319', link: '/analysis-reports/蒙牛乳业_02319_投资分析报告' },
                 { text: '海底捞_06862', link: '/analysis-reports/海底捞_06862_投资分析报告' },
                 { text: '达势股份_01405', link: '/analysis-reports/达势股份_01405_投资分析报告' }
@@ -122,7 +122,7 @@ export default defineConfig({
               text: '🚇 其他行业（港股）',
               collapsed: true,
               items: [
-                { text: '中国民航信息网络_00696', link: '/analysis-reports/中国民航信息网络_00696_投资分析报告' },
+                { text: '中国民航信息网络_00696（FCF复核）', link: '/analysis-reports/中国民航信息网络_00696_投资分析报告' },
                 { text: '京投交通科技_01522', link: '/analysis-reports/京投交通科技_01522_投资分析报告' }
               ]
             },
