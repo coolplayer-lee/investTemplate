@@ -2,8 +2,8 @@
   "template_version": "V5.5.22",
   "engine_version": "V3.1",
   "initial_capital": 500000.0,
-  "cash": 45907.0,
-  "last_trade_date": "2026-09-11",
+  "cash": 57187.0,
+  "last_trade_date": "2026-09-10",
   "positions": {
     "1522.HK": {
       "name": "京投交通科技",
@@ -219,8 +219,8 @@
       "name": "中国食品",
       "code": "00506",
       "ticker": "0506.HK",
-      "shares": 13000,
-      "avg_cost": 3.967692,
+      "shares": 10000,
+      "avg_cost": 4.03,
       "sell_trigger": 5.31,
       "target_buy": null,
       "lot_size": 1000,
