@@ -2,7 +2,7 @@
   "meta": {
     "template_version": "V5.5.22",
     "engine_version": "V4.0",
-    "generated_at": "2026-09-16 13:35:55",
+    "generated_at": "2026-09-16 13:49:35",
     "latest_trade_date": "2026-09-16"
   },
   "portfolio": {
@@ -85,18 +85,7 @@
       }
     ]
   },
-  "today_actions": [
-    {
-      "ticker": "0506.HK",
-      "name": "中国食品",
-      "action": "BUY_ADD",
-      "price": 3.7950000762939453,
-      "shares": 3000,
-      "amount": 11385.000228881836,
-      "reason": "加仓：当前价 3.795 低于成本价 4.030 的95%（3.829），触发回撤加仓策略",
-      "source": "RULE"
-    }
-  ],
+  "today_actions": [],
   "recent_actions": [
     {
       "date": "2026-03-26",
@@ -307,6 +296,6 @@
   },
   "ai_summary": {
     "ai_decisions_today": 0,
-    "rule_decisions_today": 1
+    "rule_decisions_today": 0
   }
 }
