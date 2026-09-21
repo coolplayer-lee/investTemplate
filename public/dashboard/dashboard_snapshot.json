@@ -1,31 +1,31 @@
 {
   "meta": {
-    "template_version": "V5.5.12",
-    "engine_version": "V3.1",
-    "generated_at": "2026-09-18 13:03:39",
-    "latest_trade_date": "2026-09-18"
+    "template_version": "V5.5.22",
+    "engine_version": "V4.0",
+    "generated_at": "2026-09-21 15:11:33",
+    "latest_trade_date": "2026-09-21"
   },
   "portfolio": {
     "initial_capital": 500000.0,
-    "cash": 57187.0,
-    "market_value": 355055.0,
-    "net_value": 412242.0,
-    "total_return_pct": -17.5516,
-    "position_ratio_pct": 71.011,
+    "cash": 46117.0,
+    "market_value": 362760.0,
+    "net_value": 408877.0,
+    "total_return_pct": -18.2246,
+    "position_ratio_pct": 72.552,
     "positions": [
       {
         "name": "中国食品",
         "code": "00506",
         "ticker": "0506.HK",
-        "shares": 10000,
-        "avg_cost": 4.03,
-        "close": 4.03,
-        "change_pct": 0.0,
-        "market_value": 40300.0,
-        "unrealized": 0.0,
+        "shares": 13000,
+        "avg_cost": 3.951538,
+        "close": 3.69,
+        "change_pct": -2.6385,
+        "market_value": 47970.0,
+        "unrealized": -3399.99,
         "sell_trigger": 5.31,
-        "weight_pct": 9.7758,
-        "status": "占位"
+        "weight_pct": 11.7321,
+        "status": "实时"
       },
       {
         "name": "天津发展",
@@ -33,12 +33,12 @@
         "ticker": "0882.HK",
         "shares": 40000,
         "avg_cost": 2.55,
-        "close": 2.085,
-        "change_pct": 0.2404,
-        "market_value": 83400.0,
-        "unrealized": -18600.0,
+        "close": 2.06,
+        "change_pct": -1.199,
+        "market_value": 82400.0,
+        "unrealized": -19600.0,
         "sell_trigger": 4.5,
-        "weight_pct": 20.2308,
+        "weight_pct": 20.1528,
         "status": "实时"
       },
       {
@@ -47,12 +47,12 @@
         "ticker": "1522.HK",
         "shares": 355000,
         "avg_cost": 0.29198,
-        "close": 0.211,
-        "change_pct": -2.3148,
-        "market_value": 74905.0,
-        "unrealized": -28747.9,
+        "close": 0.216,
+        "change_pct": 2.3697,
+        "market_value": 76680.0,
+        "unrealized": -26972.9,
         "sell_trigger": 0.6,
-        "weight_pct": 18.1702,
+        "weight_pct": 18.7538,
         "status": "实时"
       },
       {
@@ -61,12 +61,12 @@
         "ticker": "3320.HK",
         "shares": 17000,
         "avg_cost": 5.227059,
-        "close": 4.35,
-        "change_pct": 1.7544,
-        "market_value": 73950.0,
-        "unrealized": -14910.0,
+        "close": 4.38,
+        "change_pct": 0.6897,
+        "market_value": 74460.0,
+        "unrealized": -14400.0,
         "sell_trigger": 9.0,
-        "weight_pct": 17.9385,
+        "weight_pct": 18.2109,
         "status": "实时"
       },
       {
@@ -75,17 +75,28 @@
         "ticker": "87001.HK",
         "shares": 250000,
         "avg_cost": 0.432,
-        "close": 0.33,
-        "change_pct": 0.0,
-        "market_value": 82500.0,
-        "unrealized": -25500.0,
+        "close": 0.325,
+        "change_pct": -1.5152,
+        "market_value": 81250.0,
+        "unrealized": -26750.0,
         "sell_trigger": 1.0,
-        "weight_pct": 20.0125,
+        "weight_pct": 19.8715,
         "status": "实时"
       }
     ]
   },
-  "today_actions": [],
+  "today_actions": [
+    {
+      "ticker": "0506.HK",
+      "name": "中国食品",
+      "action": "BUY_ADD",
+      "price": 3.690000057220459,
+      "shares": 3000,
+      "amount": 11070.000171661377,
+      "reason": "加仓：当前价 3.690 低于成本价 4.030 的95%（3.829），触发回撤加仓策略",
+      "source": "RULE"
+    }
+  ],
   "recent_actions": [
     {
       "date": "2026-03-26",
@@ -176,9 +187,30 @@
       "shares": 10000,
       "amount": 40300.0,
       "reason": "用户授权模拟建仓，目标为组合当前净值10%，整手向下取整；2026-09-05休市按2026-09-04参考价4.03港元记账，非真实市场成交，费用/滑点未计。估值修复：TTM PE10.64倍低于可比样本，业务盈利与合并净现金支持；12—14倍为主观研究假设。14倍对应约5.31港元全数退出；盈利/分红及治理证伪见报告第九节。"
+    },
+    {
+      "date": "2026-09-21",
+      "ticker": "0506.HK",
+      "name": "中国食品",
+      "action": "BUY_ADD",
+      "price": 3.69,
+      "shares": 3000,
+      "amount": 11070.0,
+      "reason": "加仓：当前价 3.690 低于成本价 4.030 的95%（3.829），触发回撤加仓策略"
     }
   ],
   "grouped_trades": {
+    "2026-09-21": [
+      {
+        "ticker": "0506.HK",
+        "name": "中国食品",
+        "action": "BUY_ADD",
+        "price": 3.69,
+        "shares": 3000,
+        "amount": 11070.0,
+        "reason": "加仓：当前价 3.690 低于成本价 4.030 的95%（3.829），触发回撤加仓策略"
+      }
+    ],
     "2026-09-05": [
       {
         "ticker": "0506.HK",
@@ -272,5 +304,9 @@
         "reason": "🐢🍊低估：剔除净现金PE 3.6倍，PB 0.63倍，净现金200亿，央企医药平台（卫星仓位）"
       }
     ]
+  },
+  "ai_summary": {
+    "ai_decisions_today": 0,
+    "rule_decisions_today": 1
   }
 }
