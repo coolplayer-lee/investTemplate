@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "strategy_version": "V2.1",
-  "signal_date": "2026-10-10",
-  "generated_at": "2026-10-10T14:13:10+08:00",
+  "signal_date": "2026-10-11",
+  "generated_at": "2026-10-11T14:11:29+08:00",
   "vix": 14.84,
   "vix_market_date": "2026-10-09",
   "vix_source": "Cboe VIX历史收盘数据",
