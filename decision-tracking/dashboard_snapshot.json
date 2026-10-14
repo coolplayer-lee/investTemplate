@@ -2,16 +2,16 @@
   "meta": {
     "template_version": "V5.5.22",
     "engine_version": "V4.0",
-    "generated_at": "2026-10-13 16:35:57",
-    "latest_trade_date": "2026-10-13"
+    "generated_at": "2026-10-14 13:53:02",
+    "latest_trade_date": "2026-10-14"
   },
   "portfolio": {
     "initial_capital": 500000.0,
     "cash": 44789.0,
-    "market_value": 359355.0,
-    "net_value": 404144.0,
-    "total_return_pct": -19.1712,
-    "position_ratio_pct": 71.871,
+    "market_value": 360595.0,
+    "net_value": 405384.0,
+    "total_return_pct": -18.9232,
+    "position_ratio_pct": 72.119,
     "positions": [
       {
         "name": "中国食品",
@@ -20,11 +20,11 @@
         "shares": 13000,
         "avg_cost": 3.973462,
         "close": 3.785,
-        "change_pct": 0.53,
+        "change_pct": 0.0,
         "market_value": 49205.0,
-        "unrealized": -2450.01,
+        "unrealized": -2450.0,
         "sell_trigger": 5.31,
-        "weight_pct": 12.1751,
+        "weight_pct": 12.1379,
         "status": "实时"
       },
       {
@@ -33,12 +33,12 @@
         "ticker": "0882.HK",
         "shares": 40000,
         "avg_cost": 2.55,
-        "close": 2.01,
-        "change_pct": 0.25,
-        "market_value": 80400.0,
-        "unrealized": -21600.0,
+        "close": 1.99,
+        "change_pct": -0.995,
+        "market_value": 79600.0,
+        "unrealized": -22400.0,
         "sell_trigger": 4.5,
-        "weight_pct": 19.8939,
+        "weight_pct": 19.6357,
         "status": "实时"
       },
       {
@@ -48,11 +48,11 @@
         "shares": 360000,
         "avg_cost": 0.290822,
         "close": 0.2,
-        "change_pct": -2.44,
+        "change_pct": 0.0,
         "market_value": 72000.0,
         "unrealized": -32695.92,
         "sell_trigger": 0.6,
-        "weight_pct": 17.8154,
+        "weight_pct": 17.7609,
         "status": "实时"
       },
       {
@@ -61,12 +61,12 @@
         "ticker": "3320.HK",
         "shares": 17000,
         "avg_cost": 5.227059,
-        "close": 4.5,
-        "change_pct": 2.86,
-        "market_value": 76500.0,
-        "unrealized": -12360.0,
+        "close": 4.62,
+        "change_pct": 2.6667,
+        "market_value": 78540.0,
+        "unrealized": -10320.0,
         "sell_trigger": 9.0,
-        "weight_pct": 18.9289,
+        "weight_pct": 19.3742,
         "status": "实时"
       },
       {
@@ -80,7 +80,7 @@
         "market_value": 81250.0,
         "unrealized": -26750.0,
         "sell_trigger": 1.0,
-        "weight_pct": 20.1042,
+        "weight_pct": 20.0427,
         "status": "实时"
       }
     ]
