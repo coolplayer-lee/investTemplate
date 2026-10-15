@@ -1,19 +1,19 @@
 {
   "trigger_type": "NEW_BUY_SIGNAL",
-  "date": "2026-10-14",
+  "date": "2026-10-15",
   "subject": {
     "ticker": "002714.SZ",
     "name": "牧原股份",
     "code": "002714",
-    "current_price": 40.88999938964844,
-    "trigger_reason": "价格 40.890 触及买点 44.76"
+    "current_price": 39.75,
+    "trigger_reason": "价格 39.750 触及买点 44.76"
   },
   "context": {
     "portfolio_state": {
       "initial_capital": 500000.0,
       "cash": 44789.0,
-      "net_value": 405383.99764442444,
-      "total_return_pct": -18.9232,
+      "net_value": 405824.0093245506,
+      "total_return_pct": -18.8352,
       "positions": {
         "1522.HK": {
           "name": "京投交通科技",
