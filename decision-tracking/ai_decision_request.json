@@ -1,12 +1,12 @@
 {
   "trigger_type": "NEW_BUY_SIGNAL",
-  "date": "2026-10-16",
+  "date": "2026-10-19",
   "subject": {
     "ticker": "002714.SZ",
     "name": "牧原股份",
     "code": "002714",
-    "current_price": 41.099998474121094,
-    "trigger_reason": "价格 41.100 触及买点 44.76"
+    "current_price": 41.22999954223633,
+    "trigger_reason": "价格 41.230 触及买点 44.76"
   },
   "context": {
     "portfolio_state": {
