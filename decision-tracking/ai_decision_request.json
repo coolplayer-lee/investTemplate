@@ -1,19 +1,19 @@
 {
   "trigger_type": "NEW_BUY_SIGNAL",
-  "date": "2026-10-19",
+  "date": "2026-10-20",
   "subject": {
-    "ticker": "002714.SZ",
-    "name": "牧原股份",
-    "code": "002714",
-    "current_price": 41.22999954223633,
-    "trigger_reason": "价格 41.230 触及买点 44.76"
+    "ticker": "600600.SS",
+    "name": "青岛啤酒",
+    "code": "600600",
+    "current_price": 51.56999969482422,
+    "trigger_reason": "价格 51.570 触及买点 52.0"
   },
   "context": {
     "portfolio_state": {
       "initial_capital": 500000.0,
       "cash": 44789.0,
-      "net_value": 403004.00355005264,
-      "total_return_pct": -19.3992,
+      "net_value": 403229.0078654289,
+      "total_return_pct": -19.3542,
       "positions": {
         "1522.HK": {
           "name": "京投交通科技",
