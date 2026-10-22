@@ -1,19 +1,19 @@
 {
   "trigger_type": "NEW_BUY_SIGNAL",
-  "date": "2026-10-21",
+  "date": "2026-10-22",
   "subject": {
     "ticker": "600600.SS",
     "name": "青岛啤酒",
     "code": "600600",
-    "current_price": 50.0099983215332,
-    "trigger_reason": "价格 50.010 触及买点 52.0"
+    "current_price": 49.709999084472656,
+    "trigger_reason": "价格 49.710 触及买点 52.0"
   },
   "context": {
     "portfolio_state": {
       "initial_capital": 500000.0,
       "cash": 44789.0,
-      "net_value": 400479.0026798248,
-      "total_return_pct": -19.9042,
+      "net_value": 391763.995970726,
+      "total_return_pct": -21.6472,
       "positions": {
         "1522.HK": {
           "name": "京投交通科技",
