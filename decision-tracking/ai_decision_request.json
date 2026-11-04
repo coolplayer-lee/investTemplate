@@ -1,12 +1,12 @@
 {
   "trigger_type": "NEW_BUY_SIGNAL",
-  "date": "2026-11-02",
+  "date": "2026-11-04",
   "subject": {
     "ticker": "6862.HK",
     "name": "海底捞",
     "code": "06862",
-    "current_price": 9.335,
-    "trigger_reason": "价格 9.335 触及买点 10.0"
+    "current_price": 9.85,
+    "trigger_reason": "价格 9.850 触及买点 10.0"
   },
   "context": {
     "portfolio_state": {
